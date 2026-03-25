@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glean Starter Deployment Guide</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --panel:rgba(255,255,255,0.82);
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:rgba(52,60,237,0.10);
+      --accent:#343CED;
+      --accent-soft:rgba(52,60,237,0.08);
+      --green:#D8FD49;
+      --customer-bg:#eef9ef;
+      --customer-text:#22663a;
+      --glean-bg:#eef0ff;
+      --glean-text:#343CED;
+      --shared-bg:#fff7de;
+      --shared-text:#8a6500;
+      --radius:20px;
+      --shadow:0 1px 3px rgba(0,0,0,0.06), 0 18px 40px rgba(52,60,237,0.06);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(216,253,73,0.28), transparent 24%),
+        linear-gradient(180deg, #fbfbfd, var(--bg));
+    }
+
+    .wrap{
+      max-width:1120px;
+      margin:0 auto;
+      padding:28px 20px 64px;
+    }
+
+    .hero,.section{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+      animation:fadeUp .45s ease;
+    }
+
+    .hero{padding:32px}
+    .section{padding:26px; margin-top:18px}
+
+    .brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    .brand-mark{
+      width:34px;height:34px;border-radius:11px;
+      display:grid;place-items:center;
+      background:var(--accent);color:#fff;
+      box-shadow:0 10px 26px rgba(52,60,237,0.22);
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(34px,6vw,52px);
+      line-height:1.03;
+      letter-spacing:-0.05em;
+      max-width:12ch;
+    }
+
+    h2{
+      margin:0 0 6px;
+      font-size:28px;
+      letter-spacing:-0.04em;
+    }
+
+    h3{
+      margin:0 0 6px;
+      font-size:18px;
+      letter-spacing:-0.03em;
+    }
+
+    .sub,.lead,.muted{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .sub{max-width:68ch; margin:14px 0 0}
+    .lead{margin:0}
+
+    .chips,.legend,.inline-tags,.actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .chips{margin-top:18px}
+    .chip,.legend-pill,.owner-pill,.tag{
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .chip{
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+
+    .legend{margin-top:16px}
+    .legend-pill.customer,.owner-pill.customer{background:var(--customer-bg); color:var(--customer-text)}
+    .legend-pill.glean,.owner-pill.glean{background:var(--glean-bg); color:var(--glean-text)}
+    .legend-pill.shared,.owner-pill.shared{background:var(--shared-bg); color:var(--shared-text)}
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .metric,.card,.phase{
+      background:rgba(255,255,255,0.72);
+      border:1px solid var(--line);
+      border-radius:20px;
+    }
+
+    .metric{padding:16px}
+    .metric .label{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .metric .value{
+      font-size:24px;
+      font-weight:700;
+      letter-spacing:-0.04em;
+    }
+
+    .grid-2,.grid-3,.fields,.team-grid{
+      display:grid;
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+    .card{padding:18px}
+    .eyebrow{
+      display:inline-block;
+      margin-bottom:8px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--muted);
+    }
+
+    .field,.field-wide{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .field-wide{grid-column:1 / -1}
+
+    label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    input[type="text"], input[type="date"], textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,0.92);
+      padding:12px 14px;
+      font:inherit;
+      color:var(--text);
+      transition:border-color .2s ease, box-shadow .2s ease;
+    }
+
+    textarea{min-height:88px; resize:vertical}
+
+    input:focus, textarea:focus{
+      outline:none;
+      border-color:rgba(52,60,237,0.45);
+      box-shadow:0 0 0 3px rgba(52,60,237,0.12);
+    }
+
+    .progress-box{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-top:20px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.74);
+      border:1px solid var(--line);
+    }
+
+    .progress-bar{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background:rgba(52,60,237,0.10);
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--green));
+      transition:width .2s ease;
+    }
+
+    .actions{margin-top:18px}
+    button{
+      border:0;
+      border-radius:999px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:background-color .2s ease, transform .15s ease;
+    }
+    button:hover{transform:translateY(-1px)}
+    button:active{transform:scale(0.98)}
+    .primary{background:var(--accent); color:#fff}
+    .secondary{background:#fff; color:var(--text); border:1px solid var(--line)}
+
+    .timeline{
+      margin-top:20px;
+      display:grid;
+      gap:16px;
+    }
+
+    .phase{
+      padding:20px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .phase-head{
+      display:grid;
+      grid-template-columns:160px 1fr;
+      gap:18px;
+      align-items:start;
+      margin-bottom:14px;
+    }
+
+    .phase-time{
+      font-size:13px;
+      font-weight:700;
+      color:var(--accent);
+      background:var(--accent-soft);
+      border-radius:16px;
+      padding:12px 14px;
+      text-align:center;
+    }
+
+    .phase-title{
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:-0.03em;
+      margin-bottom:6px;
+    }
+
+    .phase-desc{
+      color:var(--muted);
+      line-height:1.55;
+      margin-bottom:10px;
+    }
+
+    .phase-target{
+      margin-top:8px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.84);
+      border:1px solid var(--line);
+      color:var(--text);
+      font-size:14px;
+    }
+
+    .task-list{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .task{
+      display:grid;
+      grid-template-columns:24px 94px 1fr;
+      gap:12px;
+      align-items:start;
+      padding:12px 0;
+      border-top:1px solid rgba(0,0,0,0.05);
+    }
+
+    .task:first-child{border-top:0}
+    .task input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      margin-top:3px;
+      accent-color:var(--accent);
+      transition:transform .15s ease;
+    }
+    .task input[type="checkbox"]:checked{transform:scale(1.05)}
+
+    .task-title{
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .task-note{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      margin-top:2px;
+    }
+
+    .phase-notes{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .small-note{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:12px;
+      line-height:1.55;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(14px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    @media (max-width: 900px){
+      .summary,.grid-2,.grid-3,.fields,.team-grid,.phase-notes{grid-template-columns:1fr}
+      .phase-head{grid-template-columns:1fr}
+      .task{grid-template-columns:24px 1fr}
+      .task .owner-pill{justify-self:start}
+      .progress-box{flex-direction:column; align-items:stretch}
+      .hero,.section{padding:22px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>Glean Starter Deployment Guide</div>
+      </div>
+      <h1>Simple timeline. Clear owners. Fewer surprises.</h1>
+      <p class="sub">
+        This view is designed for a typical <strong>Glean-hosted Starter deployment</strong>. It focuses on who needs to do what,
+        when it happens, and what “ready” looks like before launch.
+      </p>
+
+      <div class="chips">
+        <div class="chip">Starter package</div>
+        <div class="chip">Glean-hosted</div>
+        <div class="chip">Up to 5 apps</div>
+        <div class="chip">Under 10M docs</div>
+        <div class="chip">1 admin training</div>
+        <div class="chip">3 user trainings</div>
+        <div class="chip">4 business reviews</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-pill customer">Customer task</div>
+        <div class="legend-pill glean">Glean task</div>
+        <div class="legend-pill shared">Shared task</div>
+      </div>
+
+      <div class="summary">
+        <div class="metric"><div class="label">Package</div><div class="value">Starter</div></div>
+        <div class="metric"><div class="label">App target</div><div class="value">≤ 5</div></div>
+        <div class="metric"><div class="label">Launch motion</div><div class="value">Phased</div></div>
+        <div class="metric"><div class="label">Reviews</div><div class="value">4 / year</div></div>
+      </div>
+
+      <div class="progress-box">
+        <strong id="progressText">0% complete</strong>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <span id="progressMeta" class="muted">0 of 0 tasks done</span>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="exportBtn">Export checklist</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Project basics</h2>
+      <p class="lead">Fill these in live with the customer.</p>
+      <div class="fields">
+        <div class="field"><label>Customer name</label><input data-persist="customer_name" type="text" placeholder="Company" /></div>
+        <div class="field"><label>Target kickoff date</label><input data-persist="kickoff_date" type="date" /></div>
+        <div class="field"><label>Target launch date</label><input data-persist="launch_date" type="date" /></div>
+        <div class="field"><label>Workspace / preferred name in UI</label><input data-persist="ui_name" type="text" placeholder="How the company should appear in Glean" /></div>
+        <div class="field-wide"><label>Apps in scope (up to 5)</label><input data-persist="apps_scope" type="text" placeholder="Slack, Google Drive, Jira, Confluence, Salesforce" /></div>
+        <div class="field-wide"><label>Success outcomes / targets</label><textarea data-persist="success_targets" placeholder="What should feel better or measurably improve after launch?"></textarea></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Key people</h2>
+      <p class="lead">Add names, teams, and any notes for the people needed to keep deployment moving.</p>
+
+      <div class="team-grid">
+        <div class="card">
+          <div class="eyebrow">Customer team</div>
+          <h3>Who the customer should assign</h3>
+          <div class="fields">
+            <div class="field"><label>Executive sponsor</label><input data-persist="cust_exec" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Program manager / project owner</label><input data-persist="cust_pm" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Technical admin</label><input data-persist="cust_admin" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Super admin / identity owner</label><input data-persist="cust_super_admin" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Security / IT lead</label><input data-persist="cust_security" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Internal communications lead</label><input data-persist="cust_comms" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>Functional champion</label><input data-persist="cust_champion" type="text" placeholder="Name + title" /></div>
+            <div class="field"><label>App admins</label><input data-persist="cust_app_admins" type="text" placeholder="Slack / Google / Jira / etc." /></div>
+            <div class="field-wide"><label>Customer notes</label><textarea data-persist="cust_notes" placeholder="Anything important about availability, risk, approvals, or rollout dynamics"></textarea></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">Glean team</div>
+          <h3>Who from Glean is involved</h3>
+          <div class="fields">
+            <div class="field"><label>Account executive</label><input data-persist="glean_ae" type="text" placeholder="Name" /></div>
+            <div class="field"><label>Solutions engineer</label><input data-persist="glean_se" type="text" placeholder="Name" /></div>
+            <div class="field"><label>DEM</label><input data-persist="glean_dem" type="text" placeholder="Delivery Excellence Manager" /></div>
+            <div class="field"><label>AIOM</label><input data-persist="glean_aiom" type="text" placeholder="AI Outcomes Manager" /></div>
+            <div class="field"><label>Support / escalation contact</label><input data-persist="glean_support" type="text" placeholder="Optional" /></div>
+            <div class="field"><label>Shared comms channel</label><input data-persist="shared_channel" type="text" placeholder="Slack / Teams / email thread" /></div>
+            <div class="field-wide"><label>Glean notes</label><textarea data-persist="glean_notes" placeholder="Staffing notes, package assumptions, risk areas, special requests"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Timeline</h2>
+      <p class="lead">Move top to bottom. Keep scope tight. Use this as the shared working plan.</p>
+
+      <div class="timeline" id="timelineRoot"></div>
+
+      <div class="small-note">
+        DEM primarily owns deployment and milestone execution. AIOM primarily owns enablement, adoption, and outcome planning.
+        AE / SE help set scope, align expectations, and ensure the right package, staffing, and handoff are in place.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'glean-starter-deployment-guide-v2';
+
+    const phases = [
+      {
+        id: 'phase1',
+        time: 'Before signing / before kickoff',
+        title: 'Align the project',
+        desc: 'Get the right people, scope, and approvals lined up so deployment can start cleanly.',
+        target: 'Target: clear owners, confirmed apps, security path understood, kickoff ready.',
+        tasks: [
+          { owner: 'shared', title: 'Confirm this will be a Glean-hosted Starter deployment', note: 'Keep the project framed around the standard Starter package and a typical corporate rollout.' },
+          { owner: 'customer', title: 'Assign project owner, technical admin, security lead, and communications lead', note: 'These are the minimum customer roles needed to keep momentum.' },
+          { owner: 'shared', title: 'Agree on the first set of apps in scope', note: 'Stay focused on the highest-value apps, up to 5 supported applications.' },
+          { owner: 'glean', title: 'AE / SE confirm package scope, services sold, and handoff plan', note: 'Make sure the delivery team can see what was sold and what success should look like.' },
+          { owner: 'glean', title: 'Request DEM and AIOM staffing', note: 'Do this early so kickoff and rollout planning are not delayed.' }
+        ]
+      },
+      {
+        id: 'phase2',
+        time: 'Week 0',
+        title: 'Kickoff and access',
+        desc: 'Open the project, align roles, and gather the access needed to start configuration.',
+        target: 'Target: kickoff held, access path clear, owners know their lane.',
+        tasks: [
+          { owner: 'glean', title: 'DEM runs kickoff and turns this into the active project checklist', note: 'Timeline, owners, risks, and next steps should be explicit after the kickoff.' },
+          { owner: 'customer', title: 'Share SSO owner, people data source, and app admin contacts', note: 'These contacts are needed to configure authentication and connectors.' },
+          { owner: 'shared', title: 'Confirm launch audience and champions', note: 'Choose a manageable first audience instead of trying to launch to everyone at once.' },
+          { owner: 'glean', title: 'AIOM captures the initial outcomes and adoption targets', note: 'Write down what “good” looks like so launch success can be measured later.' }
+        ]
+      },
+      {
+        id: 'phase3',
+        time: 'Build ~2 days + Setup ~3 days',
+        title: 'Configure the environment',
+        desc: 'For Glean-hosted, this is mainly tenant readiness, SSO, people data, and connector setup.',
+        target: 'Target: tenant ready, SSO working, people data loaded, initial apps connected.',
+        tasks: [
+          { owner: 'glean', title: 'DEM configures SSO and people data', note: 'This establishes login, profiles, and org context.' },
+          { owner: 'customer', title: 'Customer admins approve and support app connections', note: 'Have the right app admins available for Slack, Drive, Jira, Confluence, and other chosen sources.' },
+          { owner: 'glean', title: 'DEM configures and starts crawls for the in-scope apps', note: 'The goal is to get the initial systems indexed and learning underway.' },
+          { owner: 'shared', title: 'Review governance and access expectations', note: 'Make sure the customer understands Glean will only show content a user can already access.' }
+        ]
+      },
+      {
+        id: 'phase4',
+        time: 'Week 1–2',
+        title: 'Validate and prepare for launch',
+        desc: 'Let crawling and ML settle, validate quality, and prepare admins and champions.',
+        target: 'Target: search quality checked, admin trained, launch plan ready.',
+        tasks: [
+          { owner: 'glean', title: 'DEM reviews crawl completion and launch readiness', note: 'Do not move forward until the core search experience is working well enough.' },
+          { owner: 'shared', title: 'Validate search quality and core use cases', note: 'Check that employees can find the right content, people, and answers in realistic workflows.' },
+          { owner: 'glean', title: 'Run the admin training session', note: 'Starter includes one admin training session.' },
+          { owner: 'glean', title: 'AIOM prepares launch messaging and end-user enablement', note: 'Use the package support for communications and rollout guidance.' },
+          { owner: 'customer', title: 'Customer finalizes launch audience list and internal announcement timing', note: 'Know who is launching first and how they will hear about it.' }
+        ]
+      },
+      {
+        id: 'phase5',
+        time: 'Week 2–4',
+        title: 'Launch and train users',
+        desc: 'Launch to the initial audience, teach people how to use the platform, and capture feedback quickly.',
+        target: 'Target: users trained, launch completed, issues captured fast.',
+        tasks: [
+          { owner: 'glean', title: 'AIOM runs the 3 end-user training sessions', note: 'General platform training, Agent Fundamentals, and Art of the Possible.' },
+          { owner: 'customer', title: 'Send launch communications and drive attendance', note: 'Internal comms support matters just as much as technical readiness.' },
+          { owner: 'shared', title: 'Collect user feedback and prioritize quick fixes', note: 'Treat the first weeks after launch as part of implementation, not as a handoff point.' },
+          { owner: 'glean', title: 'DEM confirms go-live stability and closes remaining deployment tasks', note: 'This is the final readiness check before moving into steady-state reviews.' }
+        ]
+      },
+      {
+        id: 'phase6',
+        time: 'Across the year',
+        title: 'Review outcomes and expand value',
+        desc: 'Use the package review cadence to track usage, health, support, and next-value opportunities.',
+        target: 'Target: outcomes reviewed, adoption tracked, next use cases prioritized.',
+        tasks: [
+          { owner: 'glean', title: 'AIOM and DEM run the business review / success planning sessions', note: 'Starter includes four of these across the year.' },
+          { owner: 'shared', title: 'Review platform health, user engagement, and support signals', note: 'Focus on whether the deployment is landing, not just whether it technically launched.' },
+          { owner: 'shared', title: 'Prioritize additional use cases for the extra hours', note: 'Starter includes 20 additional hours that can support enablement, prompts, agents, advisory, and related work.' }
+        ]
+      }
+    ];
+
+    function store(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+      catch { return {}; }
+    }
+
+    function save(data){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function setVal(key, value){
+      const data = store();
+      data[key] = value;
+      save(data);
+      updateProgress();
+    }
+
+    function getVal(key, fallback=''){
+      const data = store();
+      return data[key] ?? fallback;
+    }
+
+    function renderTimeline(){
+      const root = document.getElementById('timelineRoot');
+      root.innerHTML = '';
+
+      phases.forEach((phase, phaseIndex) => {
+        const phaseEl = document.createElement('section');
+        phaseEl.className = 'phase';
+
+        const tasksHtml = phase.tasks.map((task, taskIndex) => {
+          const key = `${phase.id}-task-${taskIndex}`;
+          const checked = !!getVal(key, false);
+          return `
+            <label class="task">
+              <input type="checkbox" data-check="${key}" ${checked ? 'checked' : ''}>
+              <span class="owner-pill ${task.owner}">${task.owner === 'glean' ? 'Glean' : task.owner === 'customer' ? 'Customer' : 'Glean + customer'}</span>
+              <div>
+                <div class="task-title">${task.title}</div>
+                <div class="task-note">${task.note}</div>
+              </div>
+            </label>
+          `;
+        }).join('');
+
+        phaseEl.innerHTML = `
+          <div class="phase-head">
+            <div class="phase-time">${phase.time}</div>
+            <div>
+              <div class="phase-title">${phase.title}</div>
+              <div class="phase-desc">${phase.desc}</div>
+              <div class="phase-target">${phase.target}</div>
+            </div>
+          </div>
+          <div class="task-list">${tasksHtml}</div>
+          <div class="phase-notes">
+            <div class="field">
+              <label>Target date</label>
+              <input data-persist="${phase.id}-date" type="date">
+            </div>
+            <div class="field">
+              <label>Owner notes</label>
+              <input data-persist="${phase.id}-owner" type="text" placeholder="Who is directly driving this phase?">
+            </div>
+            <div class="field field-wide" style="grid-column:1 / -1;">
+              <label>Phase notes</label>
+              <textarea data-persist="${phase.id}-notes" placeholder="Risks, open items, approvals, launch notes"></textarea>
+            </div>
+          </div>
+        `;
+
+        root.appendChild(phaseEl);
+      });
+    }
+
+    function hydrate(){
+      document.querySelectorAll('[data-persist]').forEach(el => {
+        const key = el.getAttribute('data-persist');
+        el.value = getVal(key, '');
+        el.addEventListener('input', () => setVal(key, el.value));
+      });
+
+      document.querySelectorAll('[data-check]').forEach(el => {
+        el.addEventListener('change', () => setVal(el.getAttribute('data-check'), el.checked));
+      });
+    }
+
+    function updateProgress(){
+      const checks = [...document.querySelectorAll('[data-check]')];
+      const done = checks.filter(c => c.checked).length;
+      const total = checks.length;
+      const pct = total ? Math.round(done / total * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = pct + '% complete';
+      document.getElementById('progressMeta').textContent = `${done} of ${total} tasks done`;
+    }
+
+    function exportData(){
+      const blob = new Blob([JSON.stringify(store(), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'glean-starter-deployment-checklist.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetAll(){
+      if (!confirm('Reset all saved fields and checklist items?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    renderTimeline();
+    hydrate();
+    updateProgress();
+
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+  </script>
+</body>
+</html>
