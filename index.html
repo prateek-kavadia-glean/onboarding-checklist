@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glean Deployment Checklist</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: rgba(255,255,255,0.92);
+      --text: #16213e;
+      --muted: #5f6b84;
+      --line: #dbe3f0;
+      --brand-1: #5b4bff;
+      --brand-2: #00b3ff;
+      --brand-3: #10b981;
+      --brand-4: #f59e0b;
+      --shadow: 0 18px 45px rgba(31, 52, 105, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(91,75,255,0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(0,179,255,0.12), transparent 24%),
+        linear-gradient(180deg, #eef3ff 0%, #f7f9fc 32%, #f5f7fb 100%);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1280px, calc(100vw - 32px));
+      margin: 24px auto 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(22,33,62,0.96), rgba(46,61,109,0.96));
+      color: white;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      opacity: 0.55;
+    }
+
+    .hero::before {
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(91,75,255,0.45), transparent 70%);
+      top: -80px; right: -30px;
+    }
+
+    .hero::after {
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(0,179,255,0.35), transparent 70%);
+      bottom: -90px; left: 10%;
+    }
+
+    .brand-row, .hero-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 24px;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand-2), var(--brand-1));
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.18);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .hero h1 {
+      margin: 18px 0 8px;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      max-width: 900px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 860px;
+      color: rgba(255,255,255,0.84);
+      font-size: 16px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 18px;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .kpi .eyebrow { color: rgba(255,255,255,0.72); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .kpi .value { margin-top: 8px; font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid rgba(22,33,62,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar {
+      padding: 18px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .sidebar h2, .section-head h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .muted { color: var(--muted); }
+
+    .control-stack { display: grid; gap: 12px; margin-top: 18px; }
+    .field, .textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--text);
+      background: white;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .field:focus, .textarea:focus, select:focus {
+      outline: none;
+      border-color: rgba(91,75,255,0.6);
+      box-shadow: 0 0 0 4px rgba(91,75,255,0.12);
+    }
+    .textarea { min-height: 100px; resize: vertical; }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    .primary {
+      color: white;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      box-shadow: 0 12px 20px rgba(91,75,255,0.18);
+    }
+    .secondary {
+      color: var(--text);
+      background: #eef3fb;
+    }
+
+    .nav-mini {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .nav-mini a {
+      text-decoration: none;
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f3f6fb;
+      font-size: 14px;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      padding: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(91,75,255,0.08);
+      color: var(--brand-1);
+    }
+
+    .progress-shell {
+      background: #edf2fb;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
+      border-radius: inherit;
+      transition: width 0.28s ease;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #fafcff);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .stages {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fff, #fbfcff);
+    }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: 84px 1.4fr 160px 150px;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(91,75,255,0.03), rgba(255,255,255,0.8));
+    }
+
+    .stage-index {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      box-shadow: 0 14px 24px rgba(91,75,255,0.15);
+    }
+
+    .stage-title h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .stage-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .duration, .owner-pill {
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #f4f7fd;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .duration strong, .owner-pill strong { display: block; font-size: 12px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+
+    .stage-body {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.95fr;
+      gap: 18px;
+    }
+
+    .checklist, .notes-card, .table-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .checklist h4, .notes-card h4, .table-card h4 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .todo-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #f8faff;
+      border: 1px solid #edf2fb;
+    }
+
+    .task input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--brand-1);
+    }
+
+    .task .task-copy { font-size: 14px; line-height: 1.45; }
+    .task .task-copy small { display: block; color: var(--muted); margin-top: 4px; }
+
+    .stack { display: grid; gap: 10px; }
+
+    .table-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .table-card th, .table-card td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .table-card th { color: var(--muted); font-weight: 700; font-size: 12px; text-transform: uppercase; }
+    .table-card td input, .table-card td select, .table-card td textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font: inherit;
+    }
+    .table-card td textarea { min-height: 54px; resize: vertical; }
+
+    .callout {
+      border-radius: 18px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.09), rgba(0,179,255,0.08));
+      border: 1px solid rgba(16,185,129,0.18);
+    }
+
+    .callout strong { display: block; margin-bottom: 6px; }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 16px;
+    }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .soft-pill {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f7f9fe;
+      color: var(--text);
+    }
+
+    @media (max-width: 1100px) {
+      .main-grid, .hero-grid, .stage-body, .info-grid { grid-template-columns: 1fr; }
+      .stage-head { grid-template-columns: 72px 1fr; }
+      .duration, .owner-pill { grid-column: span 1; }
+      .sidebar { position: static; }
+      .hero-kpis { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 740px) {
+      .shell { width: min(100vw - 18px, 100%); margin: 10px auto 32px; }
+      .hero, .section, .sidebar { padding: 16px; }
+      .stage-head { padding: 14px; }
+      .button-row { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: white; }
+      .sidebar, .button-row, #downloadBtn, #resetBtn { display: none !important; }
+      .panel, .hero, .stage, .mini-card, .checklist, .notes-card, .table-card { box-shadow: none; }
+      .shell { width: 100%; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="brand-row">
+        <div class="logo">
+          <div class="logo-mark">g</div>
+          <div>glean</div>
+        </div>
+        <div class="chip">Customer-facing deployment checklist</div>
+      </div>
+
+      <h1>Deployment plan, simplified for a typical Corporate customer.</h1>
+      <p>
+        A clear, interactive site to align on what needs to be decided before contract signature, what happens after kickoff,
+        who owns each step, and the expected timeline to get to a successful launch.
+      </p>
+
+      <div class="timeline-chip-row">
+        <div class="chip">Pre-sign alignment</div>
+        <div class="chip">Build · ~2 days</div>
+        <div class="chip">Setup · ~3 days</div>
+        <div class="chip">Learn & configure · ~1-2 weeks</div>
+        <div class="chip">Champion + user rollout · ~2-4 weeks</div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="glass">
+          <div class="hero-topline">
+            <div>
+              <div class="badge" style="background: rgba(255,255,255,0.1); color: white;">Typical motion</div>
+              <p style="margin-top:10px; color: rgba(255,255,255,0.86)">
+                Plan for roughly <strong style="color:white">4-6 weeks from kickoff to pilot wrap</strong> when security,
+                admin approvals, and initial connectors move on schedule.
+              </p>
+            </div>
+          </div>
+          <div class="pill-row" style="margin-top:14px;">
+            <div class="soft-pill" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.14); color: white;">SSO + people sync</div>
+            <div class="soft-pill" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.14); color: white;">Initial launch group</div>
+            <div class="soft-pill" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.14); color: white;">Phase 1 connectors</div>
+            <div class="soft-pill" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.14); color: white;">Assistant + extension</div>
+            <div class="soft-pill" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.14); color: white;">Feedback + success criteria</div>
+          </div>
+        </div>
+
+        <div class="hero-kpis">
+          <div class="kpi">
+            <div class="eyebrow">Primary goal</div>
+            <div class="value">Fast launch</div>
+          </div>
+          <div class="kpi">
+            <div class="eyebrow">Critical dependency</div>
+            <div class="value">Admin access</div>
+          </div>
+          <div class="kpi">
+            <div class="eyebrow">Best first scope</div>
+            <div class="value">3–5 connectors</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="main-grid">
+      <aside class="panel sidebar">
+        <h2>Customize this plan</h2>
+        <div class="muted">Everything on this page is editable and saved in your browser automatically.</div>
+
+        <div class="control-stack">
+          <input class="field persist" data-key="customerName" placeholder="Customer name" />
+          <input class="field persist" data-key="execSponsor" placeholder="Executive sponsor" />
+          <input class="field persist" data-key="gleanOwner" placeholder="Glean owner / AE or SE" />
+          <input class="field persist" data-key="kickoffDate" placeholder="Kickoff date" type="date" />
+          <input class="field persist" data-key="launchDate" placeholder="Target launch date" type="date" />
+          <textarea class="textarea persist" data-key="topRisks" placeholder="Top risks / blockers"></textarea>
+        </div>
+
+        <div style="margin-top:18px;">
+          <div class="muted" style="font-size:13px; margin-bottom:6px;">Overall completion</div>
+          <div id="completionText" style="font-weight:800; font-size:26px; letter-spacing:-0.04em;">0%</div>
+          <div class="progress-shell"><div class="progress-bar" id="globalProgress"></div></div>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="downloadBtn">Export plan</button>
+          <button class="secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="nav-mini">
+          <a href="#align">Before signature</a>
+          <a href="#timeline">Implementation timeline</a>
+          <a href="#launch-scope">Launch decisions</a>
+          <a href="#success">Success criteria</a>
+        </div>
+
+        <p class="footer-note">
+          Tip: use this in live deal cycles to align expectations early, then keep it as the shared deployment tracker after signature.
+        </p>
+      </aside>
+
+      <main class="content">
+        <section class="panel section" id="align">
+          <div class="section-head">
+            <div>
+              <div class="badge">Before contract signature / before kickoff</div>
+              <h2>What we need to align on</h2>
+            </div>
+            <div class="muted">These are the decisions most likely to affect timing and launch quality.</div>
+          </div>
+
+          <div class="info-grid">
+            <div class="mini-card">
+              <h3>Commercial + timeline alignment</h3>
+              <p>Confirm target launch timing, deployment motion, services included, and any risks that could slow kickoff.</p>
+            </div>
+            <div class="mini-card">
+              <h3>Security + deployment choices</h3>
+              <p>Lock hosting model, region, security review status, LLM approach, and any network or access constraints.</p>
+            </div>
+            <div class="mini-card">
+              <h3>Scope + launch audience</h3>
+              <p>Choose the first user groups, the first connectors, the access points, and the use cases you want to prove quickly.</p>
+            </div>
+          </div>
+
+          <div class="stage" style="margin-top:16px;">
+            <div class="stage-body" style="grid-template-columns: 1.2fr 1fr;">
+              <div class="checklist">
+                <h4>Alignment checklist</h4>
+                <div class="todo-list">
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Confirm <strong>target launch date</strong> and who owns the deployment plan.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Confirm <strong>security review path</strong> and whether CISO / security approvers are identified.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Decide <strong>deployment model</strong> (Glean-hosted vs customer cloud-prem) and preferred region.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Confirm <strong>SSO provider</strong>, <strong>people directory source</strong>, and who can grant admin access.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Agree on <strong>Phase 1 connectors</strong> and get named admins for each one.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Define the <strong>initial launch audience</strong> (typical corporate motion: a few high-value teams first).</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Agree on <strong>access points</strong> to introduce first: extension, assistant, Slack bot, desktop/mobile, or native search replacement.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Document <strong>top use cases</strong>, success criteria, and what needs to go well for the rollout to feel successful.</span></label>
+                  <label class="task"><input type="checkbox" class="track"><span class="task-copy">Set up the <strong>working channel</strong> for implementation updates and feedback.</span></label>
+                </div>
+              </div>
+
+              <div class="notes-card stack">
+                <div>
+                  <h4>Pre-sign notes</h4>
+                  <textarea class="textarea persist" data-key="presignNotes" placeholder="Capture deployment assumptions, services included, or open questions."></textarea>
+                </div>
+                <div>
+                  <h4>Known blockers</h4>
+                  <textarea class="textarea persist" data-key="blockers" placeholder="Examples: custom connector dependency, late security review, unclear admin owner, launch audience not finalized."></textarea>
+                </div>
+                <div class="callout">
+                  <strong>Keep the first phase tight.</strong>
+                  The fastest deployments usually pick a small set of launch teams, 3+ meaningful systems, clear admins, and a narrow set of use cases to prove value quickly.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel section" id="timeline">
+          <div class="section-head">
+            <div>
+              <div class="badge">Expected timeline</div>
+              <h2>Implementation stages</h2>
+            </div>
+            <div class="muted">Editable, customer-safe view of the deployment journey.</div>
+          </div>
+
+          <div class="stages">
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">0</div>
+                <div class="stage-title">
+                  <h3>Align</h3>
+                  <p>Finish the prerequisites so signature and kickoff do not create avoidable delays.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>Before signature / week 0</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Customer sponsor + Glean deal team</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Validate project timeline, launch target, and communication channel.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Confirm security approvals, data sources, use case owners, and success criteria.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Identify end users / champions and named customer admins.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Definition of done</h4>
+                  <textarea class="textarea persist" data-key="stage0done" placeholder="Example: all initial connectors identified, customer admin confirmed, launch window agreed, security path clear."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">1</div>
+                <div class="stage-title">
+                  <h3>Build</h3>
+                  <p>Stand up the environment and get the tenant ready for setup work.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>~2 days</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Glean + customer technical admin</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Prepare environment if customer-cloud deployment is required.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Deploy the Glean tenant.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Grant admin access and schedule the initial setup session.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Schedule recurring office hours.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Build notes</h4>
+                  <textarea class="textarea persist" data-key="stage1notes" placeholder="Capture environment dependencies, admin access issues, or who owns each step."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">2</div>
+                <div class="stage-title">
+                  <h3>Setup</h3>
+                  <p>Connect identity, people data, and the initial set of launch systems.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>~3 days</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Customer technical admin + Glean</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Configure SSO.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Configure directory / people sync.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Connect Phase 1 apps and apply any crawl restrictions.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Start initial crawls for each launch connector.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Optionally customize branding and help links.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Setup notes</h4>
+                  <textarea class="textarea persist" data-key="stage2notes" placeholder="Capture connector admin names, status, crawl restrictions, or branding decisions."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">3</div>
+                <div class="stage-title">
+                  <h3>Learn & configure</h3>
+                  <p>Let crawls complete, train relevance, and finish launch configuration.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>~1–2 weeks</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Glean + customer admins</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Complete crawl for each Phase 1 connector.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Run ML workflows and allow time for training.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Populate launch content like Answers, Announcements, Go Links, or Collections.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Enable and configure Glean Assistant for the launch scope.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Train customer admins and confirm the feedback path.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Learning / enablement notes</h4>
+                  <textarea class="textarea persist" data-key="stage3notes" placeholder="Capture admin training, assistant choices, content gaps, or feedback channel details."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">4</div>
+                <div class="stage-title">
+                  <h3>Champion rollout</h3>
+                  <p>Start with a small group, validate the use cases, and gather fast feedback.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>~1–2 weeks</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Customer champions + Glean</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Kick off with champions and use-case owners.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Deploy extension / desktop / mobile to the first group as needed.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Run office hours and review feedback + usage.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Send pre-pilot survey and announce availability to the initial audience.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Champion feedback</h4>
+                  <textarea class="textarea persist" data-key="stage4notes" placeholder="Capture friction points, feature requests, connector gaps, or early wins."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head">
+                <div class="stage-index">5</div>
+                <div class="stage-title">
+                  <h3>User launch & evaluation</h3>
+                  <p>Roll out to the wider pilot group, support adoption, and measure success.</p>
+                </div>
+                <div class="duration"><strong>Expected timing</strong>~1–2 weeks</div>
+                <div class="owner-pill"><strong>Primary owners</strong>Customer rollout team + Glean</div>
+              </div>
+              <div class="stage-body">
+                <div class="checklist">
+                  <h4>Core steps</h4>
+                  <div class="todo-list">
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Run user kickoff / Glean 101 session.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Hold recurring office hours and review ongoing issues.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Verify search and assistant quality in real workflows.</span></label>
+                    <label class="task"><input type="checkbox" class="track"><span class="task-copy">Send wrap-up survey and hold the pilot summary review.</span></label>
+                  </div>
+                </div>
+                <div class="notes-card">
+                  <h4>Rollout summary</h4>
+                  <textarea class="textarea persist" data-key="stage5notes" placeholder="Capture adoption themes, survey results, success stories, and next-phase recommendations."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel section" id="launch-scope">
+          <div class="section-head">
+            <div>
+              <div class="badge">Launch scope</div>
+              <h2>Decisions to document before and during setup</h2>
+            </div>
+            <div class="muted">Use these fields live with the customer.</div>
+          </div>
+
+          <div class="stage-body" style="padding:0; grid-template-columns: 1fr 1fr;">
+            <div class="table-card">
+              <h4>Customer + launch details</h4>
+              <table>
+                <tbody>
+                  <tr><th>Item</th><th>Decision / note</th></tr>
+                  <tr><td>Deployment model</td><td><select class="persist" data-key="deploymentModel"><option value="">Select</option><option>Glean hosted</option><option>Customer cloud-prem</option></select></td></tr>
+                  <tr><td>Security review status</td><td><input class="persist" data-key="securityStatus" placeholder="In progress / approved / blocked"></td></tr>
+                  <tr><td>SSO provider</td><td><input class="persist" data-key="ssoProvider" placeholder="Google / Okta / Azure AD / other"></td></tr>
+                  <tr><td>People directory source</td><td><input class="persist" data-key="directorySource" placeholder="Same as SSO / Workday / other"></td></tr>
+                  <tr><td>LLM key / model</td><td><input class="persist" data-key="llmChoice" placeholder="Customer key / Glean-managed / model"></td></tr>
+                  <tr><td>Initial launch teams</td><td><textarea class="persist" data-key="launchTeams" placeholder="Example: IT, Support, Sales Engineering"></textarea></td></tr>
+                  <tr><td>Target checkpoint</td><td><input class="persist" data-key="checkpoint" placeholder="45 / 60 / 90 day checkpoint"></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-card">
+              <h4>Access points to align on</h4>
+              <table>
+                <tbody>
+                  <tr><th>Feature</th><th>Status / note</th></tr>
+                  <tr><td>Browser extension</td><td><input class="persist" data-key="accessExtension" placeholder="Yes / no / later"></td></tr>
+                  <tr><td>Assistant</td><td><input class="persist" data-key="accessAssistant" placeholder="Yes / no / later"></td></tr>
+                  <tr><td>Slack Gleanbot</td><td><input class="persist" data-key="accessSlack" placeholder="Yes / no / later"></td></tr>
+                  <tr><td>Desktop / mobile</td><td><input class="persist" data-key="accessDesktop" placeholder="Yes / no / later"></td></tr>
+                  <tr><td>Native search replacement</td><td><input class="persist" data-key="accessNative" placeholder="Yes / no / later"></td></tr>
+                  <tr><td>Embedded / API / custom</td><td><textarea class="persist" data-key="accessCustom" placeholder="Optional: embedded, API, or custom integration notes"></textarea></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-top:16px;">
+            <h4>Phase 1 connectors</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Connector</th>
+                  <th>Admin owner</th>
+                  <th>Approval status</th>
+                  <th>Connection status</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input class="persist" data-key="c1name" placeholder="Slack"></td>
+                  <td><input class="persist" data-key="c1owner" placeholder="Admin name"></td>
+                  <td><input class="persist" data-key="c1approval" placeholder="Approved / pending"></td>
+                  <td><input class="persist" data-key="c1status" placeholder="Not started / in progress / live"></td>
+                  <td><textarea class="persist" data-key="c1notes" placeholder="Scope notes"></textarea></td>
+                </tr>
+                <tr>
+                  <td><input class="persist" data-key="c2name" placeholder="Google Drive"></td>
+                  <td><input class="persist" data-key="c2owner" placeholder="Admin name"></td>
+                  <td><input class="persist" data-key="c2approval" placeholder="Approved / pending"></td>
+                  <td><input class="persist" data-key="c2status" placeholder="Not started / in progress / live"></td>
+                  <td><textarea class="persist" data-key="c2notes" placeholder="Scope notes"></textarea></td>
+                </tr>
+                <tr>
+                  <td><input class="persist" data-key="c3name" placeholder="Confluence / Jira"></td>
+                  <td><input class="persist" data-key="c3owner" placeholder="Admin name"></td>
+                  <td><input class="persist" data-key="c3approval" placeholder="Approved / pending"></td>
+                  <td><input class="persist" data-key="c3status" placeholder="Not started / in progress / live"></td>
+                  <td><textarea class="persist" data-key="c3notes" placeholder="Scope notes"></textarea></td>
+                </tr>
+                <tr>
+                  <td><input class="persist" data-key="c4name" placeholder="SharePoint / OneDrive / other"></td>
+                  <td><input class="persist" data-key="c4owner" placeholder="Admin name"></td>
+                  <td><input class="persist" data-key="c4approval" placeholder="Approved / pending"></td>
+                  <td><input class="persist" data-key="c4status" placeholder="Not started / in progress / live"></td>
+                  <td><textarea class="persist" data-key="c4notes" placeholder="Scope notes"></textarea></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel section" id="success">
+          <div class="section-head">
+            <div>
+              <div class="badge">Definition of success</div>
+              <h2>What “good” looks like for the initial deployment</h2>
+            </div>
+            <div class="muted">Pick the few success measures that matter most to this customer.</div>
+          </div>
+
+          <div class="stage-body" style="padding:0; grid-template-columns: 1fr 1fr;">
+            <div class="checklist">
+              <h4>Recommended launch criteria</h4>
+              <div class="todo-list">
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy">At least <strong>3 meaningful systems</strong> are connected.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy"><strong>SSO</strong> and <strong>people data</strong> are working correctly.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy">Search quality is strong and results remain <strong>permission-aware</strong>.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy">The initial users can use the <strong>extension</strong> and any selected access points.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy"><strong>Assistant</strong> works for the intended rollout scope.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy">Launch content is ready: Answers, Go Links, Announcements, or Collections where useful.</span></label>
+                <label class="task"><input type="checkbox" class="track"><span class="task-copy">You have a clear way to collect <strong>feedback</strong> and a post-pilot review scheduled.</span></label>
+              </div>
+            </div>
+            <div class="notes-card stack">
+              <div>
+                <h4>Primary use cases</h4>
+                <textarea class="textarea persist" data-key="useCases" placeholder="What high-value workflows are we solving first?"></textarea>
+              </div>
+              <div>
+                <h4>Expected business outcomes</h4>
+                <textarea class="textarea persist" data-key="businessOutcomes" placeholder="Examples: faster onboarding, quicker support resolution, less time searching, higher productivity."></textarea>
+              </div>
+              <div>
+                <h4>What we need to nail</h4>
+                <textarea class="textarea persist" data-key="mustNail" placeholder="What would make the rollout feel successful to the customer?"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <p class="footer-note">
+            This site is intentionally simplified from the internal deployment templates so it can be shared and updated with customers without overwhelming them.
+          </p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'glean-deployment-checklist-v1';
+    const persistFields = Array.from(document.querySelectorAll('.persist'));
+    const trackedCheckboxes = Array.from(document.querySelectorAll('.track'));
+    const progressBar = document.getElementById('globalProgress');
+    const completionText = document.getElementById('completionText');
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        persistFields.forEach(field => {
+          const key = field.dataset.key;
+          if (key in data) field.value = data[key];
+        });
+        trackedCheckboxes.forEach((box, idx) => {
+          if (Array.isArray(data.checks)) box.checked = !!data.checks[idx];
+        });
+      } catch (e) {
+        console.warn('Could not load saved state', e);
+      }
+      updateProgress();
+    }
+
+    function saveState() {
+      const data = {};
+      persistFields.forEach(field => data[field.dataset.key] = field.value);
+      data.checks = trackedCheckboxes.map(box => box.checked);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const total = trackedCheckboxes.length;
+      const done = trackedCheckboxes.filter(box => box.checked).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      progressBar.style.width = pct + '%';
+      completionText.textContent = pct + '%';
+    }
+
+    persistFields.forEach(field => field.addEventListener('input', saveState));
+    trackedCheckboxes.forEach(box => box.addEventListener('change', saveState));
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Reset all saved fields and checkboxes for this plan?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      persistFields.forEach(field => field.value = '');
+      trackedCheckboxes.forEach(box => box.checked = false);
+      updateProgress();
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const data = {};
+      persistFields.forEach(field => data[field.dataset.key] = field.value);
+      data.checks = trackedCheckboxes.map(box => box.checked);
+      data.exportedAt = new Date().toISOString();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const customer = (data.customerName || 'customer').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase();
+      link.download = `${customer || 'customer'}-deployment-plan.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    loadState();
+  </script>
+</body>
+</html>
