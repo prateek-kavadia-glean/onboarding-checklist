@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SE Connector Path Advisor</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --panel:#fbfbfd;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:rgba(0,0,0,0.08);
+      --line-strong:rgba(0,0,0,0.14);
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,0.10);
+      --green:#11845b;
+      --green-soft:rgba(17,132,91,0.10);
+      --amber:#b46b00;
+      --amber-soft:rgba(180,107,0,0.10);
+      --red:#c9342f;
+      --red-soft:rgba(201,52,47,0.10);
+      --shadow:0 1px 3px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.05);
+      --radius:18px;
+      --radius-sm:12px;
+      --space-1:8px;
+      --space-2:12px;
+      --space-3:16px;
+      --space-4:24px;
+      --space-5:32px;
+      --space-6:48px;
+      --space-7:64px;
+      --max:1180px;
+    }
+
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+      background:linear-gradient(180deg,#fafafc 0%, #f3f4f7 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:32px 24px 72px;
+    }
+
+    .fade-in {
+      opacity:0;
+      transform:translateY(14px);
+      animation:fadeUp .45s ease forwards;
+    }
+    .fade-1{animation-delay:.03s}
+    .fade-2{animation-delay:.08s}
+    .fade-3{animation-delay:.13s}
+    .fade-4{animation-delay:.18s}
+
+    @keyframes fadeUp {
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .hero {
+      padding:40px 0 30px;
+      display:grid;
+      gap:20px;
+    }
+
+    .eyebrow {
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    h1 {
+      margin:0;
+      font-size:clamp(34px,5vw,56px);
+      line-height:1.02;
+      letter-spacing:-0.03em;
+      font-weight:650;
+      max-width:900px;
+    }
+
+    .subtitle {
+      max-width:760px;
+      font-size:18px;
+      color:var(--muted);
+    }
+
+    .hero-pills {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .pill {
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:13px;
+      backdrop-filter:blur(18px);
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    .panel {
+      background:rgba(255,255,255,.76);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+    }
+
+    .panel-inner {
+      padding:26px;
+    }
+
+    .panel-title {
+      font-size:13px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:18px;
+      font-weight:600;
+    }
+
+    .section {
+      display:grid;
+      gap:16px;
+      margin-bottom:22px;
+      padding-bottom:22px;
+      border-bottom:1px solid var(--line);
+    }
+    .section:last-child{
+      margin-bottom:0;
+      padding-bottom:0;
+      border-bottom:none;
+    }
+
+    .section h3 {
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+      letter-spacing:-0.02em;
+    }
+
+    .hint {
+      color:var(--muted);
+      font-size:13px;
+      margin-top:-8px;
+    }
+
+    .option-grid {
+      display:grid;
+      gap:10px;
+    }
+
+    .option-btn {
+      appearance:none;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 15px;
+      text-align:left;
+      font:inherit;
+      color:var(--text);
+      cursor:pointer;
+      transition:border-color .2s ease, background-color .2s ease, transform .15s ease, box-shadow .2s ease;
+    }
+    .option-btn:hover {
+      border-color:var(--line-strong);
+      transform:translateY(-1px);
+      box-shadow:0 8px 20px rgba(0,0,0,.04);
+    }
+    .option-btn.active {
+      border-color:rgba(0,113,227,.45);
+      background:var(--accent-soft);
+      box-shadow:0 0 0 3px rgba(0,113,227,.12);
+    }
+    .option-btn:active { transform:scale(.99); }
+
+    .toggle-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:14px 0;
+      border-top:1px solid var(--line);
+    }
+    .toggle-row:first-of-type { border-top:none; padding-top:0; }
+
+    .toggle-copy {
+      display:grid;
+      gap:4px;
+    }
+    .toggle-copy strong {
+      font-size:15px;
+      font-weight:600;
+    }
+    .toggle-copy span {
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .switch {
+      position:relative;
+      width:50px;
+      height:30px;
+      flex:0 0 auto;
+    }
+    .switch input { display:none; }
+    .slider {
+      position:absolute; inset:0;
+      background:#d2d2d7;
+      border-radius:999px;
+      transition:all .2s ease;
+      cursor:pointer;
+    }
+    .slider::before {
+      content:"";
+      position:absolute;
+      width:24px; height:24px;
+      top:3px; left:3px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 1px 3px rgba(0,0,0,.14);
+      transition:all .2s ease;
+    }
+    .switch input:checked + .slider {
+      background:var(--accent);
+    }
+    .switch input:checked + .slider::before {
+      transform:translateX(20px);
+    }
+
+    .result-hero {
+      padding:28px 28px 18px;
+      border-bottom:1px solid var(--line);
+      display:grid;
+      gap:14px;
+    }
+
+    .recommendation-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+
+    .recommendation-title {
+      margin:0;
+      font-size:clamp(26px,4vw,38px);
+      line-height:1.05;
+      letter-spacing:-0.03em;
+    }
+
+    .recommendation-sub {
+      color:var(--muted);
+      font-size:16px;
+      max-width:780px;
+    }
+
+    .result-grid {
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:0;
+    }
+
+    .result-main, .result-side {
+      padding:28px;
+    }
+    .result-side {
+      border-left:1px solid var(--line);
+      background:rgba(245,245,247,.55);
+    }
+
+    .stack {
+      display:grid;
+      gap:18px;
+    }
+
+    .callout {
+      padding:18px 18px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+
+    .callout h4 {
+      margin:0 0 8px;
+      font-size:16px;
+      letter-spacing:-0.02em;
+    }
+
+    .callout p {
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .path-list {
+      display:grid;
+      gap:12px;
+    }
+
+    .path-item {
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:14px;
+      align-items:start;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      transition:all .2s ease;
+    }
+    .path-item.recommended {
+      border-color:rgba(0,113,227,.4);
+      background:linear-gradient(180deg, rgba(0,113,227,.08), rgba(255,255,255,.92));
+    }
+
+    .path-rank {
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      background:#f0f1f5;color:var(--muted);
+      font-size:13px;font-weight:700;
+      margin-top:1px;
+    }
+    .path-item.recommended .path-rank {
+      background:var(--accent);
+      color:#fff;
+    }
+
+    .path-copy strong {
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+    .path-copy span {
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .path-state {
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-top:4px;
+      font-weight:700;
+    }
+
+    .decision-points {
+      display:grid;
+      gap:10px;
+    }
+
+    .decision-pill {
+      padding:12px 14px;
+      border-radius:12px;
+      font-size:13px;
+      color:var(--text);
+      background:#fff;
+      border:1px solid var(--line);
+    }
+    .decision-pill strong {
+      display:block;
+      margin-bottom:3px;
+      font-size:13px;
+    }
+    .decision-pill span {
+      color:var(--muted);
+    }
+
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:600;
+      width:max-content;
+    }
+    .tag.green { color:var(--green); background:var(--green-soft); }
+    .tag.amber { color:var(--amber); background:var(--amber-soft); }
+    .tag.red { color:var(--red); background:var(--red-soft); }
+    .tag.blue { color:var(--accent); background:var(--accent-soft); }
+
+    .subgrid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+
+    .mini-card {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+    }
+    .mini-card h4 {
+      margin:0 0 10px;
+      font-size:16px;
+      letter-spacing:-0.02em;
+    }
+
+    ul.clean {
+      margin:0;
+      padding-left:18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    ul.clean li { margin:7px 0; }
+
+    .talk-track {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      font-size:15px;
+      line-height:1.55;
+    }
+
+    .talk-track .label {
+      display:block;
+      margin-bottom:8px;
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+    }
+
+    .footer-note {
+      margin-top:18px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .banner {
+      margin-top:24px;
+      padding:16px 18px;
+      border-radius:16px;
+      border:1px solid rgba(201,52,47,.18);
+      background:linear-gradient(180deg, rgba(201,52,47,.08), rgba(255,255,255,.78));
+      color:#4a2020;
+      font-size:14px;
+    }
+    .banner strong { display:block; margin-bottom:6px; }
+
+    .legend {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .site-sections {
+      margin-top:24px;
+      display:grid;
+      gap:24px;
+    }
+
+    @media (max-width: 1020px) {
+      .layout { grid-template-columns:1fr; }
+      .result-grid { grid-template-columns:1fr; }
+      .result-side { border-left:none; border-top:1px solid var(--line); }
+      .subgrid { grid-template-columns:1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding:20px 16px 56px; }
+      .panel-inner, .result-main, .result-side, .result-hero { padding:20px; }
+      .hero { padding-top:22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero fade-in fade-1">
+      <div class="eyebrow">Interactive field guide</div>
+      <h1>Connector Path Advisor for Solutions Engineers</h1>
+      <div class="subtitle">
+        Use this to decide the best path for your current deal: native connector, mirrored source, API/MCP action, partner, customer DIY, or a Glean-built custom connector.
+      </div>
+      <div class="hero-pills">
+        <div class="pill">Use cases first</div>
+        <div class="pill">Universal workflows over niche asks</div>
+        <div class="pill">Do not lead with hours</div>
+        <div class="pill">Custom is the last option</div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="panel fade-in fade-2">
+        <div class="panel-inner">
+          <div class="panel-title">Deal inputs</div>
+
+          <div class="section">
+            <h3>1. What stage is the deal in?</h3>
+            <div class="option-grid" data-group="stage">
+              <button class="option-btn active" data-value="early">Early — discovery / scoping</button>
+              <button class="option-btn" data-value="mid">Mid — technical alignment / security</button>
+              <button class="option-btn" data-value="late">Late — validation / procurement pressure</button>
+            </div>
+            <div class="hint">Use this to weight speed vs precision.</div>
+          </div>
+
+          <div class="section">
+            <h3>2. How essential is the datasource?</h3>
+            <div class="option-grid" data-group="criticality">
+              <button class="option-btn" data-value="nice">Nice-to-have</button>
+              <button class="option-btn active" data-value="important">Important but not a blocker</button>
+              <button class="option-btn" data-value="blocker">True blocker to the buying decision</button>
+            </div>
+            <div class="hint">If it is not material to the buying decision, do not force custom scope.</div>
+          </div>
+
+          <div class="section">
+            <h3>3. Who is this really for?</h3>
+            <div class="option-grid" data-group="breadth">
+              <button class="option-btn active" data-value="broad">Broad team / department workflow</button>
+              <button class="option-btn" data-value="mixed">Useful for a subset, but can expand</button>
+              <button class="option-btn" data-value="narrow">A few individuals only</button>
+            </div>
+            <div class="hint">For larger deals, bias hard toward universal flows, not bespoke workflows for two people.</div>
+          </div>
+
+          <div class="section">
+            <h3>4. What kind of source is it?</h3>
+            <div class="option-grid" data-group="sourcetype">
+              <button class="option-btn active" data-value="saas">Modern SaaS / API-friendly app</button>
+              <button class="option-btn" data-value="fileshare">True SMB / Windows / mapped file share</button>
+              <button class="option-btn" data-value="objectstore">S3 / Azure Blob / Nasuni / API-backed storage</button>
+              <button class="option-btn" data-value="unknown">Unclear / legacy / opaque</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>5. Customer shape</h3>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Native connector already exists</strong>
+                <span>Best path if it covers the required workflow.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="native" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Another source already collects / mirrors the data</strong>
+                <span>Example: transcripts written into Salesforce or standard systems.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="mirror" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Narrow workflow is enough</strong>
+                <span>Point lookup or action is acceptable instead of full indexing.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="narrowWorkflow" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Customer is API-comfortable</strong>
+                <span>They have engineers and can own a DIY connector path.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="apiComfort" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <strong>Partner motion is viable</strong>
+                <span>Useful when early and truly essential.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="partnerViable" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="panel fade-in fade-3">
+        <div class="result-hero">
+          <div class="recommendation-badge" id="badge">Recommended path</div>
+          <h2 class="recommendation-title" id="recTitle">Native connector</h2>
+          <div class="recommendation-sub" id="recSub">
+            Start with the simplest, most supportable path that proves the broad workflow.
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <section class="result-main">
+            <div class="stack">
+              <div class="callout">
+                <div class="tag blue" id="speedTag">Speed: High</div>
+                <h4>Why this is the right move</h4>
+                <p id="whyCopy"></p>
+              </div>
+
+              <div class="subgrid">
+                <div class="mini-card">
+                  <h4>How to use it</h4>
+                  <ul class="clean" id="howList"></ul>
+                </div>
+                <div class="mini-card">
+                  <h4>Talk track</h4>
+                  <div class="talk-track">
+                    <span class="label">What to say</span>
+                    <div id="talkTrack"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mini-card">
+                <h4>Deal-stage guidance</h4>
+                <ul class="clean" id="stageGuidance"></ul>
+              </div>
+
+              <div class="mini-card">
+                <h4>Audience guidance</h4>
+                <div class="subgrid">
+                  <div>
+                    <div class="tag green">Less technical buyers</div>
+                    <ul class="clean" id="audienceBusiness"></ul>
+                  </div>
+                  <div>
+                    <div class="tag amber">Technical / IT / admins</div>
+                    <ul class="clean" id="audienceTechnical"></ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="banner" id="redFlagBanner" style="display:none;">
+                <strong>Red flag</strong>
+                This looks too narrow for the size of the deal. Bring the conversation back to a broad workflow, standard systems, and universal adoption path instead of solving for a couple of individuals.
+              </div>
+            </div>
+          </section>
+
+          <aside class="result-side">
+            <div class="stack">
+              <div>
+                <div class="panel-title">Priority stack</div>
+                <div class="path-list" id="pathList"></div>
+              </div>
+
+              <div>
+                <div class="panel-title">Decision points</div>
+                <div class="decision-points" id="decisionPoints"></div>
+              </div>
+
+              <div>
+                <div class="panel-title">Quick reminders</div>
+                <div class="legend">
+                  <div class="tag green">Use cases first</div>
+                  <div class="tag blue">Universal flows first</div>
+                  <div class="tag amber">Feasibility ≠ delivery</div>
+                  <div class="tag red">Do not lead with hours</div>
+                </div>
+                <div class="footer-note">
+                  For file shares, assume a real project. For large deals, do not overfit the evaluation to a niche workflow for a tiny subset of users.
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <section class="site-sections fade-in fade-4">
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-title">Path reference</div>
+          <div class="subgrid">
+            <div class="mini-card">
+              <h4>1. Native connector</h4>
+              <ul class="clean">
+                <li>Best default for broad coverage, permissions, ranking, and support.</li>
+                <li>Check where the data actually lives before discussing custom work.</li>
+                <li>Best fit for large-team or department-wide workflows.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>2. Another system already collecting the data</h4>
+              <ul class="clean">
+                <li>Use when operational truth already lands in a standard system.</li>
+                <li>Great example: transcripts, summaries, or records written into Salesforce.</li>
+                <li>Often the fastest way to prove the workflow without bespoke work.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>3. API / MCP action</h4>
+              <ul class="clean">
+                <li>Fastest time to value.</li>
+                <li>Best for narrow lookups, actions, or real-time workflow bridges.</li>
+                <li>Lower quality than real indexed coverage; not a substitute for a broad connector.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>4. Partner-led build</h4>
+              <ul class="clean">
+                <li>Good early when the connector is essential and the customer is not technical enough to DIY.</li>
+                <li>Protects deal velocity and avoids overcommitting Glean in pre-sales.</li>
+                <li>Think of this as a dedicated workstream, not an add-on.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>5. Customer DIY on Glean APIs</h4>
+              <ul class="clean">
+                <li>Strong option late in cycle or with technically savvy customers.</li>
+                <li>SE helps with shape, permissions, IDs, URLs, and testing approach.</li>
+                <li>Customer owns build and maintenance.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>6. Glean-built custom connector</h4>
+              <ul class="clean">
+                <li>Last option, not first option.</li>
+                <li>Only after business scoping, technical alignment, and blocker status are clear.</li>
+                <li>Especially for file shares, this is a scoped project with real dependencies and calendar time.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-title">Stage guidance</div>
+          <div class="subgrid">
+            <div class="mini-card">
+              <h4>Stage 1 — Discovery</h4>
+              <ul class="clean">
+                <li>Validate pain, required capabilities, and whether the workflow matters broadly.</li>
+                <li>Do not dive into connector design.</li>
+                <li>Confirm where the data lives and what the customer is actually trying to prove.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>Stage 2 — Scoping / business value alignment</h4>
+              <ul class="clean">
+                <li>Map the workflow, quantify pain, and decide must-have vs nice-to-have.</li>
+                <li>This is the right stage to choose native vs mirrored source vs action vs partner vs DIY vs custom.</li>
+                <li>Bias toward repeatable, universal flows.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>Stage 4 — Security &amp; IT alignment</h4>
+              <ul class="clean">
+                <li>By now you should have a clear proposed path.</li>
+                <li>Validate APIs, identity, permissions, volume, refresh, hosting, and constraints.</li>
+                <li>Use this call to confirm the path, not invent it.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <h4>Stage 5 — Validation</h4>
+              <ul class="clean">
+                <li>Prove agreed success criteria.</li>
+                <li>If bespoke work is needed, it should already be framed as partner-led, DIY, or a formal custom workstream.</li>
+                <li>Do not improvise custom promises in validation.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      stage: 'early',
+      criticality: 'important',
+      breadth: 'broad',
+      sourcetype: 'saas',
+      native: true,
+      mirror: false,
+      narrowWorkflow: false,
+      apiComfort: false,
+      partnerViable: true
+    };
+
+    const pathMeta = {
+      native: {
+        title: 'Native connector',
+        speed: 'High',
+        sub: 'Best default for broad coverage, better quality, and the cleanest proof path.',
+        why: 'The content already lives in a source Glean supports directly, so this is the fastest and most supportable way to prove a broad workflow without creating expectation debt.',
+        how: [
+          'Confirm the data really lives in the native source users depend on.',
+          'Use the native connector to prove the broad workflow, not a one-off edge case.',
+          'Bias here especially when the deal is early or the evaluation needs to cover a real team, department, or standard process.'
+        ],
+        talk: '“We should first confirm whether the data you care about is already available through a native path. If it is, that is almost always the fastest and most reliable way to prove the workflow.”',
+        business: [
+          'Lead with speed, lower risk, and broader applicability across the team.',
+          'Frame this as the cleanest path to proving the business outcome.'
+        ],
+        technical: [
+          'Emphasize supportability, permissions handling, metadata quality, and faster deployment.',
+          'Use this when you want the least controversial architecture choice.'
+        ]
+      },
+      mirror: {
+        title: 'Use another system already collecting the data',
+        speed: 'High',
+        sub: 'Best second choice when the same operational truth already lands in a better-supported source.',
+        why: 'The source being requested is not the best path, but the same information already lands in a system with stronger coverage, cleaner UX, or better fit for this stage of the deal.',
+        how: [
+          'Ask whether the same data is already mirrored, exported, summarized, or operationalized elsewhere.',
+          'Prefer the system users already rely on operationally if it proves the workflow well enough.',
+          'Use this heavily for universal flows like transcripts, ticket summaries, CRM notes, and shared docs.'
+        ],
+        talk: '“If the operational truth for this workflow already lands in another system your team uses every day, we should seriously consider proving the workflow there first rather than creating a new connector path immediately.”',
+        business: [
+          'Lead with lower lift and faster time to value.',
+          'Frame this as proving the workflow without unnecessary custom work.'
+        ],
+        technical: [
+          'Explain that a stronger source often gives cleaner metadata, better URLs, and a better search experience.',
+          'Use this when the system of origin is weaker than the system of operation.'
+        ]
+      },
+      action: {
+        title: 'API / MCP action',
+        speed: 'Very high',
+        sub: 'Best for narrow, real-time, or execution-oriented workflows — not broad retrieval.',
+        why: 'The customer does not need full indexing coverage right now. They need a point interaction, a real-time fetch, an action, or a bridge for a narrow workflow.',
+        how: [
+          'Use this when a narrow workflow is enough to prove value.',
+          'Do not sell this as equivalent to a full connector.',
+          'Use it for a subset workflow only when that narrow slice is acceptable for this stage.'
+        ],
+        talk: '“If the goal here is a narrow workflow or real-time action rather than broad enterprise retrieval from that source, an API or MCP-based approach may be the fastest way to prove value.”',
+        business: [
+          'Position it as the lowest-lift way to unblock a narrow proof quickly.',
+          'Be explicit that this is not broad knowledge coverage.'
+        ],
+        technical: [
+          'Differentiate actions / APIs from indexing.',
+          'Explain that this is faster, but lower quality than real indexed coverage.'
+        ]
+      },
+      partner: {
+        title: 'Bring in a partner',
+        speed: 'Medium',
+        sub: 'Best early when the connector is essential and no simpler path works.',
+        why: 'The connector is a true blocker, the deal is still early enough to shape the workstream, and you want to avoid turning pre-sales into an open-ended bespoke commitment from Glean.',
+        how: [
+          'Use this when the connector is essential early and the customer is not well positioned to DIY.',
+          'Treat it as a real scoped workstream, not a side promise.',
+          'Keep ownership, support, cost, and timeline explicit.'
+        ],
+        talk: '“If this source is truly critical and we confirm there is no simpler path, the cleanest next step may be to scope it with one of our partners as a dedicated workstream rather than treat it like a casual pre-sales add-on.”',
+        business: [
+          'Lead with momentum and scoping accuracy.',
+          'Avoid positioning this as free or automatic.'
+        ],
+        technical: [
+          'Clarify build ownership, expected dependencies, and customer technical participation.',
+          'Use this when you need bespoke work without forcing a product commitment.'
+        ]
+      },
+      diy: {
+        title: 'Guide the customer on Glean APIs to DIY',
+        speed: 'Medium-high',
+        sub: 'Best when the customer is technical, API-comfortable, and wants control.',
+        why: 'The customer has engineers, the blocker is narrow enough to own themselves, and waiting for Glean-built custom work would slow the deal more than it helps.',
+        how: [
+          'Help with datasource shape, permissions model, IDs, URLs, testing, and incremental strategy.',
+          'Do not build it for them in pre-sales.',
+          'Use this especially when the customer is technical and comfortable owning maintenance.'
+        ],
+        talk: '“If your team is API-comfortable, this may actually be a better fit for a customer-built custom datasource using Glean’s APIs than waiting on a Glean-built connector.”',
+        business: [
+          'Lead with control and speed.',
+          'Position this as empowering their team rather than waiting on a bespoke queue.'
+        ],
+        technical: [
+          'Walk them through datasource design, permissioning, and indexing approach.',
+          'Be clear that customer-owned means customer-maintained.'
+        ]
+      },
+      custom: {
+        title: 'Glean-built custom connector',
+        speed: 'Low',
+        sub: 'Last option. Use only when the source is truly material and other paths are not enough.',
+        why: 'The source is a real blocker, the simpler options are not good enough, and there is a credible reason Glean should own the workstream.',
+        how: [
+          'Only move here after business scoping and technical alignment are complete.',
+          'Make ownership, support, and hosting explicit.',
+          'Treat file shares and similar sources as true projects with phases and dependencies.'
+        ],
+        talk: '“If that source is truly required, we should treat it as a dedicated scoped workstream, not assume it behaves like a standard connector.”',
+        business: [
+          'Do not lead with hours.',
+          'Lead with feasibility, dependencies, and why this is necessary.'
+        ],
+        technical: [
+          'Validate APIs, identity, permissions, hosting, volume, and refresh before commitment.',
+          'Especially for file shares, assume real calendar time and environment readiness work.'
+        ]
+      }
+    };
+
+    const priorityOrder = ['native','mirror','action','partner','diy','custom'];
+
+    const els = {
+      recTitle: document.getElementById('recTitle'),
+      recSub: document.getElementById('recSub'),
+      whyCopy: document.getElementById('whyCopy'),
+      howList: document.getElementById('howList'),
+      talkTrack: document.getElementById('talkTrack'),
+      stageGuidance: document.getElementById('stageGuidance'),
+      audienceBusiness: document.getElementById('audienceBusiness'),
+      audienceTechnical: document.getElementById('audienceTechnical'),
+      pathList: document.getElementById('pathList'),
+      decisionPoints: document.getElementById('decisionPoints'),
+      speedTag: document.getElementById('speedTag'),
+      redFlagBanner: document.getElementById('redFlagBanner')
+    };
+
+    function chooseRecommendation() {
+      if (state.native) return 'native';
+      if (state.mirror) return 'mirror';
+
+      const narrowEnoughForAction =
+        state.narrowWorkflow || state.breadth === 'narrow' || state.narrowWorkflow === true;
+
+      if (narrowEnoughForAction) return 'action';
+
+      if (state.stage === 'early' && state.criticality === 'blocker' && state.partnerViable) return 'partner';
+
+      if ((state.stage === 'late' || state.apiComfort) && state.criticality !== 'nice') return 'diy';
+
+      return 'custom';
+    }
+
+    function buildStageGuidance(rec) {
+      const out = [];
+      if (state.stage === 'early') {
+        out.push('Stay at the workflow level. Do not get pulled into deep connector design on the first call.');
+        out.push('Confirm whether this is a broad workflow or a narrow edge case.');
+        if (rec === 'partner') out.push('Since this is early and essential, treat partner scoping as the cleanest bespoke path.');
+      }
+      if (state.stage === 'mid') {
+        out.push('Use technical alignment to verify the chosen path, not invent it from scratch.');
+        out.push('Validate APIs, permissions, identity mapping, volume, refresh, and hosting constraints.');
+      }
+      if (state.stage === 'late') {
+        out.push('Bias toward paths that preserve momentum and reduce procurement drag.');
+        if (rec === 'diy') out.push('A technical customer may prefer a DIY path over waiting on Glean-built custom work.');
+        if (rec === 'custom') out.push('If custom is still the answer this late, keep scope crisp and expectations explicit.');
+      }
+      return out;
+    }
+
+    function buildDecisionPoints(rec) {
+      const points = [
+        {
+          title:'Broad vs narrow workflow',
+          text: state.breadth === 'narrow'
+            ? 'This looks narrow. For larger deals, steer back to universal flows.'
+            : 'This supports a broader workflow, which is the right evaluation shape.'
+        },
+        {
+          title:'Source type',
+          text:
+            state.sourcetype === 'fileshare' ? 'True fileshare: treat as a real scoped workstream.'
+            : state.sourcetype === 'objectstore' ? 'Object store: usually think custom API connector, not fileshare crawler.'
+            : state.sourcetype === 'saas' ? 'API-friendly SaaS: strong candidate for native, mirrored-source, API, or DIY paths.'
+            : 'Legacy / unclear source: do not overcommit before technical validation.'
+        },
+        {
+          title:'Buying impact',
+          text:
+            state.criticality === 'blocker' ? 'This is material to the buying decision.'
+            : state.criticality === 'important' ? 'Important, but not a reason to force custom work too early.'
+            : 'Nice-to-have. Avoid bespoke scope.'
+        }
+      ];
+
+      if (rec === 'action') {
+        points.push({
+          title:'Quality tradeoff',
+          text:'Fastest path, but lower quality than true indexed coverage.'
+        });
+      }
+      if (rec === 'diy') {
+        points.push({
+          title:'Ownership',
+          text:'Customer builds and maintains; SE guides shape, permissions, IDs, URLs, and testing.'
+        });
+      }
+      if (rec === 'custom' || rec === 'partner') {
+        points.push({
+          title:'Scoping posture',
+          text:'Quote phases and dependencies, not raw hours.'
+        });
+      }
+      return points;
+    }
+
+    function render() {
+      const rec = chooseRecommendation();
+      const meta = pathMeta[rec];
+
+      els.recTitle.textContent = meta.title;
+      els.recSub.textContent = meta.sub;
+      els.whyCopy.textContent = meta.why;
+      els.speedTag.textContent = `Speed: ${meta.speed}`;
+
+      els.howList.innerHTML = meta.how.map(item => `<li>${item}</li>`).join('');
+      els.talkTrack.textContent = meta.talk;
+      els.audienceBusiness.innerHTML = meta.business.map(item => `<li>${item}</li>`).join('');
+      els.audienceTechnical.innerHTML = meta.technical.map(item => `<li>${item}</li>`).join('');
+      els.stageGuidance.innerHTML = buildStageGuidance(rec).map(item => `<li>${item}</li>`).join('');
+
+      els.pathList.innerHTML = priorityOrder.map((path, idx) => {
+        const p = pathMeta[path];
+        const recommended = path === rec;
+        return `
+          <div class="path-item ${recommended ? 'recommended' : ''}">
+            <div class="path-rank">${idx + 1}</div>
+            <div class="path-copy">
+              <strong>${p.title}</strong>
+              <span>${p.sub}</span>
+            </div>
+            <div class="path-state">${recommended ? 'Use now' : 'Fallback'}</div>
+          </div>
+        `;
+      }).join('');
+
+      els.decisionPoints.innerHTML = buildDecisionPoints(rec).map(point => `
+        <div class="decision-pill">
+          <strong>${point.title}</strong>
+          <span>${point.text}</span>
+        </div>
+      `).join('');
+
+      const narrowLargeDeal = state.breadth === 'narrow' && state.criticality !== 'blocker';
+      els.redFlagBanner.style.display = narrowLargeDeal ? 'block' : 'none';
+    }
+
+    document.querySelectorAll('[data-group]').forEach(group => {
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state[group.dataset.group] = btn.dataset.value;
+          render();
+        });
+      });
+    });
+
+    ['native','mirror','narrowWorkflow','apiComfort','partnerViable'].forEach(id => {
+      document.getElementById(id).addEventListener('change', e => {
+        state[id] = e.target.checked;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
