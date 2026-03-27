@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motor City Wash Works | Business Case for Glean</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #111832;
+      --panel-2: #0f1630;
+      --card: rgba(255,255,255,0.06);
+      --text: #eef2ff;
+      --muted: #b7c1e0;
+      --subtle: #8f9ac0;
+      --line: rgba(255,255,255,0.10);
+      --accent: #6ea8ff;
+      --accent-2: #7ef0d2;
+      --good: #76e6b3;
+      --warn: #ffd479;
+      --shadow: 0 18px 60px rgba(0,0,0,0.35);
+      --radius: 20px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(110,168,255,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(126,240,210,0.16), transparent 24%),
+        linear-gradient(180deg, #09101f 0%, #0b1020 100%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(11,16,32,0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      opacity: 0.92;
+    }
+
+    .hero {
+      padding: 72px 0 36px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid rgba(126,240,210,0.25);
+      background: rgba(126,240,210,0.08);
+      color: var(--accent-2);
+      border-radius: 999px;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 6vw, 64px);
+      line-height: 1.02;
+      margin: 0 0 18px;
+      letter-spacing: -0.03em;
+      max-width: 980px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: clamp(18px, 2.2vw, 22px);
+      max-width: 900px;
+      margin: 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.9fr;
+      gap: 24px;
+      margin-top: 34px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      padding: 28px;
+    }
+
+    .panel-title {
+      margin: 0 0 12px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 14px;
+      color: var(--muted);
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .check .dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(118,230,179,0.16);
+      border: 1px solid rgba(118,230,179,0.4);
+      color: var(--good);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat .num {
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    section {
+      padding: 34px 0;
+    }
+
+    h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      margin: 0 0 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-lead {
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 0 24px;
+    }
+
+    .cards-3, .cards-4, .cards-2 {
+      display: grid;
+      gap: 18px;
+    }
+
+    .cards-4 { grid-template-columns: repeat(4, 1fr); }
+    .cards-3 { grid-template-columns: repeat(3, 1fr); }
+    .cards-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .card {
+      padding: 22px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .card p, .card li {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .card ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(110,168,255,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(110,168,255,0.24);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      background: rgba(255,255,255,0.03);
+    }
+
+    td {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .quote {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(110,168,255,0.09), rgba(255,255,255,0.04));
+      border: 1px solid rgba(110,168,255,0.16);
+      box-shadow: var(--shadow);
+    }
+
+    .quote p {
+      margin: 0 0 10px;
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    .quote span {
+      color: var(--subtle);
+      font-size: 14px;
+    }
+
+    .calc {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--subtle);
+      font-size: 13px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(110,168,255,0.55);
+      box-shadow: 0 0 0 4px rgba(110,168,255,0.12);
+    }
+
+    .results {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .result h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .result .big {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .fine {
+      color: var(--subtle);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .footer {
+      padding: 18px 0 54px;
+      color: var(--subtle);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .cards-4,
+      .cards-3,
+      .cards-2,
+      .quote-grid,
+      .calc {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-grid > :first-child { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 760px) {
+      .hero, section { padding-top: 28px; }
+      .hero-grid,
+      .cards-4,
+      .cards-3,
+      .cards-2,
+      .quote-grid,
+      .calc,
+      .calc-grid,
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">Motor City Wash Works | Business Case for Glean</div>
+      <div class="nav-links">
+        <a href="#summary">Summary</a>
+        <a href="#roi">ROI</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#results">Validation Results</a>
+        <a href="#calculator">ROI Model</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero" id="summary">
+      <div class="eyebrow">Customer-facing draft · based on discovery and validation sessions</div>
+      <h1>Glean can help Motor City Wash Works turn trapped knowledge into faster support, better uptime, and more scalable revenue workflows.</h1>
+      <p>
+        The strongest starting point is <strong>customer support</strong>: reducing escalations, helping Tier 1 and Tier 2 teams self-serve across manuals, tickets, training content, and email, and giving engineers time back to ship product. From there, the same platform can extend into <strong>installed-base selling</strong>, <strong>RFP response</strong>, and <strong>quote/configuration workflows</strong>.
+      </p>
+
+      <div class="hero-grid">
+        <div class="panel hero-panel">
+          <div class="panel-title">Executive summary</div>
+          <div class="checklist">
+            <div class="check"><div class="dot">✓</div><div>Today, support work is spread across <strong>Zendesk, manuals, SharePoint/file storage, email, and team chat</strong>, which drives long searches and frequent escalation.</div></div>
+            <div class="check"><div class="dot">✓</div><div>MCWW shared that <strong>only a small portion of troubleshooting knowledge is formally documented</strong>, while experienced managers and engineers still hold most of the critical context.</div></div>
+            <div class="check"><div class="dot">✓</div><div>Software engineering time is materially impacted by support escalation, which slows work on <strong>CruzControl, NXT Wash, and WashLink</strong>.</div></div>
+            <div class="check"><div class="dot">✓</div><div>On the revenue side, MCWW has clear upside in <strong>installed-base search</strong>, <strong>RFP automation</strong>, and a longer-term <strong>quote/BOM assist</strong> use case tied to NetSuite and legacy sales data.</div></div>
+            <div class="check"><div class="dot">✓</div><div>The validation session already showed that Glean could answer real MCWW questions, cite the source material, and ask useful follow-up questions when prompts were vague.</div></div>
+          </div>
+        </div>
+
+        <div class="panel hero-panel">
+          <div class="panel-title">Observed operating signals</div>
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="num">30–40%</div>
+              <div class="label">of software support cases were described as needing engineering involvement</div>
+            </div>
+            <div class="stat">
+              <div class="num">5 / 4 / 4–6</div>
+              <div class="label">Tier 1, Tier 2, and Tier 3 / SME support coverage discussed on calls</div>
+            </div>
+            <div class="stat">
+              <div class="num">~30%</div>
+              <div class="label">of engineering capacity is already planned around support interruption</div>
+            </div>
+            <div class="stat">
+              <div class="num">7 years</div>
+              <div class="label">average equipment refresh window mentioned for installed-base sales targeting</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why-now">
+      <h2>Why now</h2>
+      <p class="section-lead">
+        MCWW is already in the middle of a broader modernization effort. That creates a strong moment to introduce a system that works <strong>before, during, and after</strong> cloud migration: centralizing knowledge, reducing friction in support, and making revenue-critical information easier to use across teams.
+      </p>
+      <div class="cards-3">
+        <div class="card">
+          <div class="pill">Support & uptime</div>
+          <h3>Reduce time-to-answer and avoid unnecessary escalation</h3>
+          <p>Support agents today are piecing together answers across manuals, file storage, tickets, email, and team conversations. Glean gives them one place to search, ask, and follow citations back to source material.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Engineering capacity</div>
+          <h3>Give product and engineering teams time back</h3>
+          <p>When engineering is repeatedly pulled into support, roadmap work slows down. Glean helps capture those resolutions so the next similar issue can be handled faster without re-creating the same escalation loop.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Growth</div>
+          <h3>Turn scattered revenue data into field and sales leverage</h3>
+          <p>MCWW already sees an opportunity to search historical sales, identify customers due for refresh, prepare for trips more intelligently, and respond to RFPs faster with product-backed answers.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roi">
+      <h2>Where the ROI comes from</h2>
+      <p class="section-lead">
+        The business case does not depend on one single bet. It compounds across <strong>support productivity</strong>, <strong>engineering time reclaimed</strong>, <strong>faster revenue motions</strong>, and <strong>better documentation reuse</strong>.
+      </p>
+      <div class="cards-4">
+        <div class="card">
+          <h3>1. Support productivity</h3>
+          <ul>
+            <li>Less time searching across systems per case</li>
+            <li>Faster answers for new and mid-tenure reps</li>
+            <li>More consistent responses across software, hardware, and training questions</li>
+            <li>Lower dependence on the same few experts</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2. Engineering capacity</h3>
+          <ul>
+            <li>Fewer repeat escalations for known issues</li>
+            <li>Faster handoff when escalation is required</li>
+            <li>Resolution summaries become reusable knowledge instead of one-off effort</li>
+            <li>More time back for releases, fixes, and roadmap work</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>3. Installed-base growth</h3>
+          <ul>
+            <li>Search 20 years of customer history in one place</li>
+            <li>Find accounts with aging equipment or refresh signals</li>
+            <li>Plan higher-yield field trips and account coverage</li>
+            <li>Support better account planning with customer 360 context</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>4. RFP and quote acceleration</h3>
+          <ul>
+            <li>Faster retrieval of product dimensions, maintenance details, and documentation</li>
+            <li>Less manual copying from product documents</li>
+            <li>More repeatable draft responses</li>
+            <li>Longer-term path toward configuration and BOM assist</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="use-cases">
+      <h2>Priority use cases for MCWW</h2>
+      <p class="section-lead">
+        Based on the calls so far, these are the most concrete, customer-relevant workflows to prioritize.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Use case</th>
+              <th>Current challenge</th>
+              <th>Future state with Glean</th>
+              <th>Primary value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Support knowledge copilot</strong></td>
+              <td>Agents search manuals, file storage, tickets, email, and team conversations before escalating.</td>
+              <td>Agents ask one question, get a cited answer, and can continue with follow-up troubleshooting or draft a customer-ready reply.</td>
+              <td>Faster answers, lower escalation volume, better consistency.</td>
+            </tr>
+            <tr>
+              <td><strong>Escalation knowledge capture</strong></td>
+              <td>Engineering and senior support often solve issues, but the knowledge does not reliably become reusable documentation.</td>
+              <td>Resolution summaries become part of the searchable knowledge base and can be reused on the next similar case.</td>
+              <td>Reclaimed engineering time and stronger repeatability.</td>
+            </tr>
+            <tr>
+              <td><strong>Installed-base search / refresh targeting</strong></td>
+              <td>Historical customer sales are hard to search across legacy and current systems.</td>
+              <td>Sales can search one place for customers with aging equipment, large multi-site footprints, or low recent activity.</td>
+              <td>Better trip planning, upsell identification, and share-of-wallet growth.</td>
+            </tr>
+            <tr>
+              <td><strong>Customer 360 for sellers</strong></td>
+              <td>Important account context lives across service issues, transactions, documents, and internal notes.</td>
+              <td>Sellers get a structured view of account history, issues, opportunities, and suggested next steps.</td>
+              <td>More productive prep and stronger customer conversations.</td>
+            </tr>
+            <tr>
+              <td><strong>RFP response automation</strong></td>
+              <td>Teams manually hunt through product docs to answer repetitive questions.</td>
+              <td>Glean drafts responses from source material and shows where the answer came from.</td>
+              <td>Shorter response cycles and less manual rework.</td>
+            </tr>
+            <tr>
+              <td><strong>Quote / BOM assist</strong></td>
+              <td>The current configurator process is Excel-heavy and separated from the ERP workflow.</td>
+              <td>Longer term, Glean can support product / item lookup and assist with structured configuration workflows where the right data is available.</td>
+              <td>Reduced manual effort and better sales responsiveness.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="results">
+      <h2>What the validation session already proved</h2>
+      <p class="section-lead">
+        The strongest part of the story is that this is not just theoretical. The validation session used MCWW content and real test questions from the team.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Question tested</th>
+              <th>What Glean did</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>What size is the crossbeam of the Sudz-A-Lot arch?</strong></td>
+              <td>Returned the specific dimension and cited the source document.</td>
+              <td>Shows exact-answer retrieval from product documentation.</td>
+            </tr>
+            <tr>
+              <td><strong>How do I replace my Mac Valve?</strong></td>
+              <td>Returned a step-by-step answer, started with safety guidance, and offered follow-up troubleshooting.</td>
+              <td>Demonstrates support guidance, not just search.</td>
+            </tr>
+            <tr>
+              <td><strong>SCF1 error code</strong></td>
+              <td>Recognized it as a troubleshooting query, suggested recommended actions, and asked for more context.</td>
+              <td>Shows guided problem resolution and clarification.</td>
+            </tr>
+            <tr>
+              <td><strong>Slow down on time is on what version of Dry N Shine?</strong></td>
+              <td>Resolved the answer from a transcribed video-based source.</td>
+              <td>Expands usable knowledge beyond static manuals.</td>
+            </tr>
+            <tr>
+              <td><strong>My buffer top wheel will not come down when I send the ready signal.</strong></td>
+              <td>Mapped customer terminology (“buffer”) to the right product context and assembled an answer from multiple sources.</td>
+              <td>Shows the system can handle real-world phrasing, not just ideal wording.</td>
+            </tr>
+            <tr>
+              <td><strong>Why am I not getting reports?</strong></td>
+              <td>Asked for clarification when the question was too vague, then produced a better answer once product context was added.</td>
+              <td>Shows the right balance between precision and guardrails.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="quote-grid">
+        <div class="quote">
+          <p>“That’s more than what I thought it was going to do.”</p>
+          <span>Reaction during the validation demo</span>
+        </div>
+        <div class="quote">
+          <p>“That’s quite impressive.”</p>
+          <span>Reaction to the Mac Valve troubleshooting response</span>
+        </div>
+        <div class="quote">
+          <p>“Very impressive.”</p>
+          <span>Closing reaction at the end of the business impact review</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator">
+      <h2>Editable ROI model</h2>
+      <p class="section-lead">
+        The inputs below let MCWW turn the workflow observations from discovery into a directional annual ROI model. A few fields are preloaded from the calls; the rest can be adjusted with live operational data.
+      </p>
+      <div class="calc">
+        <div class="panel hero-panel">
+          <div class="panel-title">Inputs</div>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="engCount">Engineers materially pulled into support</label>
+              <input id="engCount" type="number" min="0" step="1" value="6" />
+            </div>
+            <div class="field">
+              <label for="engRate">Loaded engineering cost per hour ($)</label>
+              <input id="engRate" type="number" min="0" step="1" value="110" />
+            </div>
+            <div class="field">
+              <label for="supportPct">Engineer time currently consumed by support (%)</label>
+              <input id="supportPct" type="number" min="0" max="100" step="1" value="30" />
+            </div>
+            <div class="field">
+              <label for="reclaimPct">Target reduction in escalated engineering effort (%)</label>
+              <input id="reclaimPct" type="number" min="0" max="100" step="1" value="35" />
+            </div>
+            <div class="field">
+              <label for="ticketsMonth">Support tickets per month</label>
+              <input id="ticketsMonth" type="number" min="0" step="1" value="1200" />
+            </div>
+            <div class="field">
+              <label for="minutesSaved">Minutes saved per ticket</label>
+              <input id="minutesSaved" type="number" min="0" step="1" value="8" />
+            </div>
+            <div class="field">
+              <label for="supportRate">Blended support cost per hour ($)</label>
+              <input id="supportRate" type="number" min="0" step="1" value="42" />
+            </div>
+            <div class="field">
+              <label for="rfpsYear">RFPs / major questionnaires per year</label>
+              <input id="rfpsYear" type="number" min="0" step="1" value="30" />
+            </div>
+            <div class="field">
+              <label for="hoursPerRfp">Hours saved per RFP</label>
+              <input id="hoursPerRfp" type="number" min="0" step="0.5" value="6" />
+            </div>
+            <div class="field">
+              <label for="rfpRate">Blended seller / PM cost per hour ($)</label>
+              <input id="rfpRate" type="number" min="0" step="1" value="65" />
+            </div>
+          </div>
+          <div class="fine">These are editable working assumptions. The preloaded support and engineering percentages reflect figures discussed in discovery; the cost and volume assumptions should be replaced with MCWW operating data for a final business case.</div>
+        </div>
+
+        <div class="panel hero-panel">
+          <div class="panel-title">Annual value summary</div>
+          <div class="results">
+            <div class="result">
+              <h4>Engineering capacity reclaimed</h4>
+              <div class="big" id="engValue">$0</div>
+              <div id="engHoursText">0 hours / year</div>
+            </div>
+            <div class="result">
+              <h4>Support productivity value</h4>
+              <div class="big" id="supportValue">$0</div>
+              <div id="supportHoursText">0 hours / year</div>
+            </div>
+            <div class="result">
+              <h4>RFP / response productivity value</h4>
+              <div class="big" id="rfpValue">$0</div>
+              <div id="rfpHoursText">0 hours / year</div>
+            </div>
+            <div class="result">
+              <h4>Total modeled annual value</h4>
+              <div class="big" id="totalValue">$0</div>
+              <div>Directional only — excludes upside from refresh selling, customer retention, and faster quoting.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Suggested starting point</h2>
+      <p class="section-lead">
+        The fastest path to measurable ROI is to land in support first, prove value quickly, and then expand into revenue workflows using the same underlying knowledge foundation.
+      </p>
+      <div class="cards-3">
+        <div class="card">
+          <div class="pill">Phase 1</div>
+          <h3>Support + escalation knowledge</h3>
+          <p>Connect the highest-value support sources first, validate answers against real workflows, and measure search time, escalations, and engineering interruption.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Phase 2</div>
+          <h3>Sales search + customer 360</h3>
+          <p>Layer in legacy and current sales history so the field team can identify refresh opportunities, prepare for trips, and search account context instantly.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Phase 3</div>
+          <h3>RFP + quote assist</h3>
+          <p>Use the same indexed knowledge to accelerate RFP responses and continue assessing how far product / item data can support quote and BOM-related workflows.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Prepared for Motor City Wash Works. This version is written to be customer-facing and focuses on business value, workflow impact, and validation results.
+    </div>
+  </div>
+
+  <script>
+    const ids = [
+      'engCount','engRate','supportPct','reclaimPct','ticketsMonth','minutesSaved','supportRate','rfpsYear','hoursPerRfp','rfpRate'
+    ];
+
+    function fmtCurrency(n) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n || 0);
+    }
+
+    function fmtNumber(n) {
+      return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n || 0);
+    }
+
+    function value(id) {
+      const v = parseFloat(document.getElementById(id).value);
+      return Number.isFinite(v) ? v : 0;
+    }
+
+    function calculate() {
+      const engCount = value('engCount');
+      const engRate = value('engRate');
+      const supportPct = value('supportPct') / 100;
+      const reclaimPct = value('reclaimPct') / 100;
+      const ticketsMonth = value('ticketsMonth');
+      const minutesSaved = value('minutesSaved');
+      const supportRate = value('supportRate');
+      const rfpsYear = value('rfpsYear');
+      const hoursPerRfp = value('hoursPerRfp');
+      const rfpRate = value('rfpRate');
+
+      const engHours = engCount * 2080 * supportPct * reclaimPct;
+      const engValue = engHours * engRate;
+
+      const supportHours = ticketsMonth * 12 * (minutesSaved / 60);
+      const supportValue = supportHours * supportRate;
+
+      const rfpHours = rfpsYear * hoursPerRfp;
+      const rfpValue = rfpHours * rfpRate;
+
+      const total = engValue + supportValue + rfpValue;
+
+      document.getElementById('engValue').textContent = fmtCurrency(engValue);
+      document.getElementById('engHoursText').textContent = `${fmtNumber(engHours)} hours / year`;
+      document.getElementById('supportValue').textContent = fmtCurrency(supportValue);
+      document.getElementById('supportHoursText').textContent = `${fmtNumber(supportHours)} hours / year`;
+      document.getElementById('rfpValue').textContent = fmtCurrency(rfpValue);
+      document.getElementById('rfpHoursText').textContent = `${fmtNumber(rfpHours)} hours / year`;
+      document.getElementById('totalValue').textContent = fmtCurrency(total);
+    }
+
+    ids.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+    calculate();
+  </script>
+</body>
+</html>
