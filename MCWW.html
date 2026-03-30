@@ -343,6 +343,93 @@
       margin-bottom: 10px;
     }
 
+    .calc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--subtle);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(110,168,255,0.55);
+      box-shadow: 0 0 0 3px rgba(110,168,255,0.12);
+    }
+
+    .results {
+      display: grid;
+      gap: 12px;
+    }
+
+    .result {
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .result h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .result .big {
+      font-size: clamp(26px, 4vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .result .sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .assumptions {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--subtle);
+      line-height: 1.5;
+    }
+
+    .assumptions strong { color: var(--muted); }
+
     @media (max-width: 1080px) {
       .hero-grid,
       .cards-4,
@@ -350,6 +437,9 @@
       .cards-2,
       .quote-grid {
         grid-template-columns: 1fr 1fr;
+      }
+      .calc {
+        grid-template-columns: 1fr;
       }
       .hero-grid > :first-child { grid-column: 1 / -1; }
     }
@@ -361,6 +451,9 @@
       .cards-3,
       .cards-2,
       .quote-grid {
+        grid-template-columns: 1fr;
+      }
+      .calc-grid {
         grid-template-columns: 1fr;
       }
       .nav-inner {
@@ -376,6 +469,7 @@
       <div class="brand">MCWW · Glean · Ownership brief</div>
       <div class="nav-links">
         <a href="#summary">Overview</a>
+        <a href="#roi">ROI</a>
         <a href="#proof">Signal</a>
         <a href="#why-now">Why now</a>
         <a href="#outcomes">Outcomes</a>
@@ -393,35 +487,99 @@
     <section class="hero" id="summary">
       <div class="eyebrow">Draft for Jason &amp; Rob · ownership conversation</div>
       <h1>Scale support as MCWW grows internationally—without relying on a few experts for every answer.</h1>
-      <p class="lead" style="margin-bottom: 20px; font-weight: 500; color: var(--text);">
-        Unify support and ops knowledge, answer more at Tier 1 and Tier 2, and cut escalations—so teams get faster, clearer answers.
+      <p class="lead" style="margin-bottom: 16px; font-weight: 500; color: var(--text);">
+        Unify support and ops knowledge, answer more at Tier 1 and Tier 2, and cut escalations.
       </p>
       <p class="lead">
-        MCWW has an active initiative to <strong>expand internationally</strong>, while the support organization is already stretched: the team has grown substantially, coverage is <strong>8am–8pm Eastern Mon–Fri</strong> (weekends emergency-only), and experienced people still hold most of the product context. <strong>Glean helps Tier 1 and Tier 2 answer more on the first touch</strong>—with citations—so fewer issues escalate. That is a path to broader coverage <strong>without only adding headcount for every new region.</strong>
+        <strong>International expansion</strong> is a stated initiative; support is already at <strong>~18 people</strong>, <strong>8am–8pm Eastern</strong> weekdays, with tribal knowledge still concentrated in veterans. <strong>Order status</strong> in NetSuite has absorbed consulting spend; threads can still hit <strong>20–30 emails over two weeks</strong>. Glean addresses both: cited answers for support and faster lookups for ops—starting with connectors MCWW already named (Zendesk, Microsoft, NetSuite, Slack, ClickUp, Jira).
       </p>
-      <p class="lead" style="margin-top: 16px; font-size: clamp(16px, 1.9vw, 19px);">
-        On the sales and ops side, MCWW has invested <strong>consulting time in NetSuite reporting</strong> to answer <strong>“what is the status of this order?”</strong>—with limited success—while in practice status questions can still turn into <strong>long email chains</strong>. Glean can sit on indexed NetSuite and Microsoft data so users ask in one place instead of rebuilding reports for every variation.
-      </p>
+    </section>
 
-      <div class="hero-grid">
+    <section id="roi">
+      <h2>Directional ROI model</h2>
+      <p class="section-lead">
+        Prefills reflect <strong>Gong</strong>: <strong>30–40%</strong> of software-support cases still pull engineering (Jason); <strong>~30%</strong> of engineering capacity reserved for support in project planning; KB covers an estimated <strong>~2–3%</strong> of troubleshooting nuance needed. Dollar rates and tickets/month are editable—use finance and Zendesk for final numbers.
+      </p>
+      <div class="calc">
         <div class="panel hero-panel">
-          <div class="panel-title">Executive summary (plain terms)</div>
+          <div class="panel-title">Inputs</div>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="engCount">FTEs in software engineering path whose schedules include support interruption</label>
+              <input id="engCount" type="number" min="0" step="1" value="6" />
+            </div>
+            <div class="field">
+              <label for="engRate">Loaded engineering $/hour (illustrative—confirm with finance)</label>
+              <input id="engRate" type="number" min="0" step="1" value="115" />
+            </div>
+            <div class="field">
+              <label for="supportPct">Share of engineering time on support today (%). Jason: ~30% when scheduling.</label>
+              <input id="supportPct" type="number" min="0" max="100" step="1" value="30" />
+            </div>
+            <div class="field">
+              <label for="reclaimPct">Target reduction in those support-interrupt hours with Glean (%)</label>
+              <input id="reclaimPct" type="number" min="0" max="100" step="1" value="25" />
+            </div>
+            <div class="field">
+              <label for="ticketsMonth">Support tickets / month (replace with Zendesk export)</label>
+              <input id="ticketsMonth" type="number" min="0" step="1" value="600" />
+            </div>
+            <div class="field">
+              <label for="minutesSaved">Minutes saved per ticket (Tier 1–2 search &amp; routing—modeling)</label>
+              <input id="minutesSaved" type="number" min="0" step="1" value="6" />
+            </div>
+            <div class="field">
+              <label for="supportRate">Blended support labor $/hour (illustrative)</label>
+              <input id="supportRate" type="number" min="0" step="1" value="48" />
+            </div>
+          </div>
+          <div class="assumptions">
+            <strong>Sources (Gong):</strong> <a href="https://us-4493.app.gong.io/call?id=2549780818603388356" style="color: var(--accent);">MCWW | Glean: Support Use Cases</a> — 30–40% software cases touch engineering; ~30% engineering capacity reserved for support; ~2–3% of needed troubleshooting knowledge in KB; escalation path aligned with ~2h “to engineer” example in discussion. <a href="https://us-4493.app.gong.io/call?id=5872743841652297305" style="color: var(--accent);">Glean Connect</a> — order-status email volume; ~18 support headcount; coverage hours.
+          </div>
+        </div>
+        <div class="panel hero-panel">
+          <div class="panel-title">Annual value (illustrative)</div>
+          <div class="results">
+            <div class="result">
+              <h4>Engineering time reclaimed</h4>
+              <div class="big" id="engValue">$0</div>
+              <div class="sub" id="engHoursText">0 hrs / yr</div>
+            </div>
+            <div class="result">
+              <h4>Support productivity</h4>
+              <div class="big" id="supportValue">$0</div>
+              <div class="sub" id="supportHoursText">0 hrs / yr</div>
+            </div>
+            <div class="result">
+              <h4>Combined (directional)</h4>
+              <div class="big" id="totalValue">$0</div>
+              <div class="sub">Not a forecast—sensitivity-table for ownership. Implementation: <a href="#commercial" style="color: var(--accent);">$10K / $25K</a> packages.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="at-a-glance">
+      <div class="hero-grid" style="margin-top: 0;">
+        <div class="panel hero-panel">
+          <div class="panel-title">Executive summary</div>
           <div class="checklist">
-            <div class="check"><div class="dot">✓</div><div><strong>Start with support and sales/ops,</strong> not engineering. The first win is front-line teams getting answers faster.</div></div>
-            <div class="check"><div class="dot">✓</div><div><strong>International expansion</strong> raises the bar: new reps and partners need answers without waiting on the same small group of experienced people.</div></div>
-            <div class="check"><div class="dot">✓</div><div><strong>Order status and operational visibility</strong> are daily pain: reporting out of NetSuite and older systems fuels long email chains.</div></div>
-            <div class="check"><div class="dot">✓</div><div>Glean connects to common systems (see <a href="#deployment" style="color: var(--accent);">recommended starting scope</a>) so the story stays <strong>small on day one</strong> and expands once value is proven.</div></div>
+            <div class="check"><div class="dot">✓</div><div><strong>Land with support + sales/ops</strong> — not a company-wide transformation on day one.</div></div>
+            <div class="check"><div class="dot">✓</div><div><strong>International + scale:</strong> tool-up Tier 1/2 before betting only on more hires.</div></div>
+            <div class="check"><div class="dot">✓</div><div><strong>Order status:</strong> ask NetSuite-backed questions without every answer being a new report.</div></div>
+            <div class="check"><div class="dot">✓</div><div><strong>Scope:</strong> <a href="#deployment" style="color: var(--accent);">Day-1 connectors</a> first; defer NAS / Dataworks / WashLink until proven.</div></div>
           </div>
         </div>
 
         <div class="panel hero-panel" id="proof">
-          <div class="panel-title">Already real—not a slide deck only</div>
+          <div class="panel-title">Already validated in-session</div>
           <div class="proof-block">
             <p>
-              On the <strong>Mar 27, 2026</strong> connect call, Jason reviewed an early version of this brief. His reaction: <strong>“This is awesome”</strong>—and <strong>“I think you just saved us a bunch of work.”</strong> The draft had been produced with Glean during the conversation itself (single query, full synthesis), which is why he joked about whether Glean had built the page.
+              <strong>Mar 27, 2026:</strong> Jason — <strong>“This is awesome”</strong>; <strong>“I think you just saved us a bunch of work.”</strong> Brief generated with Glean during the call.
             </p>
             <p class="fine">
-              Source: Gong · <a href="https://us-4493.app.gong.io/call?id=5872743841652297305" style="color: var(--accent);">MCWW | Glean Connect</a>
+              <a href="https://us-4493.app.gong.io/call?id=5872743841652297305" style="color: var(--accent);">MCWW | Glean Connect</a>
             </p>
           </div>
         </div>
@@ -431,55 +589,55 @@
     <section id="why-now">
       <h2>Why this matters now</h2>
       <p class="section-lead">
-        Discovery with Jason and the support leaders aligned on three pressures: <strong>international growth</strong>, <strong>how support scales when product knowledge is concentrated</strong>, and <strong>order status visibility</strong> in NetSuite.
+        Three pressures: <strong>international growth</strong>, <strong>tribal knowledge vs Tier 1/2 scale</strong>, <strong>order status in NetSuite</strong>.
       </p>
       <div class="cards-3">
         <div class="card">
           <div class="pill">Growth</div>
-          <h3>International expansion needs a different support model</h3>
-          <p>MCWW is not looking to train every new hire from zero on car wash systems alone—you need answers in flow. Jason framed the goal as eventually supporting international markets (e.g. broader coverage / call-center models) <strong>after</strong> Tier 1 and Tier 2 can resolve more with better tools, not just more bodies.</p>
+          <h3>International</h3>
+          <p>Longer term: coverage models (e.g. call center) only work if Tier 1/2 can resolve more with tools—not only headcount. Jason tied Glean to that path on the Mar 27 connect.</p>
         </div>
         <div class="card">
           <div class="pill">Support</div>
-          <h3>Tier 1 and Tier 2 need to carry more of the load</h3>
-          <p>Today’s workflow runs through Zendesk, manuals, file storage, email, and Teams/Slack before Tier 3 and engineering. Jason described the support function as on the order of <strong>18 people</strong> with <strong>three leads</strong> (Mike, Dan, Micah) bearing much of the load—so when Tier 1 cannot self-serve, experienced people stay underwater. Glean targets that gap first.</p>
+          <h3>Tier 1–3 → engineering</h3>
+          <p>Path: Zendesk → docs → files → email/Teams → Tier 3 (three leads) → engineering. Devon’s working example: <strong>~2 hours</strong> to escalate; MCWW said the shape matches their world. Glean compresses search and repeat escalations.</p>
         </div>
         <div class="card">
-          <div class="pill">Ops visibility</div>
-          <h3>Order status should not require a custom report every time</h3>
-          <p>NetSuite is the direction for operational truth, but “ask the status of this order” has been hard to satisfy with static reports alone. A grounded Q&amp;A layer—where connectors allow—reduces the email ping-pong Jason described on calls.</p>
+          <div class="pill">Ops</div>
+          <h3>Order status</h3>
+          <p>NetSuite + consulting on reports still leave “where’s my order?” as long threads. Indexed Q&amp;A is the complement—not another one-off report for every question.</p>
         </div>
       </div>
     </section>
 
     <section id="outcomes">
-      <h2>Two business outcomes to land first</h2>
+      <h2>Two outcomes first</h2>
       <p class="section-lead">
-        Everything else on this page supports these two. They are written for owners who run a manufacturing business—not for a generic “AI platform” evaluation.
+        Ownership language: fewer escalations, faster answers—not a generic “AI” purchase.
       </p>
 
       <div class="cards-2" style="margin-top: 8px;">
         <div class="card">
           <div class="outcome-letter">A</div>
-          <h3>Scale support for international growth</h3>
-          <p><strong>Today:</strong> Training new reps takes longer when answers live in veterans’ heads, tickets, and file folders.</p>
-          <p style="margin-top: 12px;"><strong>Future state:</strong> Tier 1 and Tier 2 get cited answers from manuals, tickets, and connected systems—so new hires ramp faster and the same experts are not the bottleneck on every issue.</p>
-          <p style="margin-top: 12px;"><strong>Business impact:</strong> Fewer preventable escalations, less interruption to engineering from issues the front line could have closed, and a clearer path to coverage in new markets without linear headcount growth.</p>
+          <h3>Scale support (international-ready)</h3>
+          <p><strong>Today:</strong> Knowledge in heads + scattered systems; Tier 1 often gathers facts for Tier 2/3.</p>
+          <p style="margin-top: 10px;"><strong>With Glean:</strong> Cited answers across manuals, tickets, Microsoft, Slack—Tier 1/2 close more without burning the three leads and engineering.</p>
+          <p style="margin-top: 10px;"><strong>Impact:</strong> Fewer engineering interrupts on repeat issues; path to broader coverage without linear hiring.</p>
         </div>
         <div class="card">
           <div class="outcome-letter">B</div>
-          <h3>Answer sales and ops questions instantly</h3>
-          <p><strong>Today:</strong> NetSuite reporting has absorbed consulting effort, yet status threads can still reach <strong>20–30 emails over two weeks</strong> (Jason, Mar 27 connect).</p>
-          <p style="margin-top: 12px;"><strong>Future state:</strong> Ask once; get an answer tied back to the system of record where the connector allows—fewer rounds and faster clarity.</p>
-          <p style="margin-top: 12px;"><strong>Business impact:</strong> Faster response to customers and distributors, less busywork for sales and ops, fewer mistakes from stale threads.</p>
+          <h3>Sales &amp; ops: order status</h3>
+          <p><strong>Today:</strong> <strong>20–30 emails over two weeks</strong> on status (Jason, Mar 27).</p>
+          <p style="margin-top: 10px;"><strong>With Glean:</strong> Ask over NetSuite + email + files where connected—less reply-all.</p>
+          <p style="margin-top: 10px;"><strong>Impact:</strong> Faster replies to customers and distributors; less rework from stale threads.</p>
         </div>
       </div>
     </section>
 
     <section id="first">
-      <h2>What Glean would do first</h2>
+      <h2>What Glean does first</h2>
       <p class="section-lead">
-        Engineering value (code search, release notes, deeper product development workflows) is real—but it belongs <strong>after</strong> support and sales/ops prove out. Optional test licenses for engineering can come later; they should not anchor the ownership story.
+        Engineering (code, release notes) is <strong>later</strong>—optional test licenses after support + ops prove value.
       </p>
       <div class="cards-3">
         <div class="card">
@@ -501,9 +659,9 @@
     </section>
 
     <section id="validated">
-      <h2>What was already validated</h2>
+      <h2>Validation demo (MCWW data)</h2>
       <p class="section-lead">
-        The validation used MCWW content and real questions—not a canned demo. The table below is tightened to the essentials.
+        Business impact review — real product questions, not generic prompts.
       </p>
       <div class="table-wrap">
         <table>
@@ -571,22 +729,22 @@
     </section>
 
     <section id="decision">
-      <h2>Why buy now · why not build · why start small</h2>
+      <h2>Buy vs build vs start small</h2>
       <p class="section-lead">
-        On the Mar 27 connect call, Jason described ownership’s starting point: a culture rooted in manufacturing (“manufacturer of metal”), where software is newer—and some leaders ask <strong>why pay for this when we could put an AI bot in our own data center</strong>. The answer for the business case is not a platform lecture; it is <strong>time-to-value, connectors, permissions, and who maintains them</strong>, starting with support and sales/ops where pain is already acute.
+        Jason: ownership comes from a <strong>metal manufacturing</strong> mindset; some ask <strong>why pay vs. build a bot in our data center</strong> (Mar 27). Response: <strong>connectors, permissions, maintenance</strong>—and land where pain is acute (support + ops), not IT science projects.
       </p>
       <div class="cards-3">
         <div class="card">
-          <h3>Why buy now</h3>
-          <p>Support strain and international growth do not wait for a perfect data estate. A packaged product with enterprise connectors and security controls gets you to <strong>measured value in weeks</strong>, not a multi-year internal build.</p>
+          <h3>Why buy</h3>
+          <p>Weeks to value with supported connectors—not a multi-year internal R&amp;D program.</p>
         </div>
         <div class="card">
-          <h3>Why not build it ourselves</h3>
-          <p>“Build” still means maintaining connectors, permissions, models, and UX across Zendesk, Microsoft, NetSuite, Slack, and more—plus staff to keep them current. That is a product team, not a side project. <strong>Buy the outcome; do not underestimate the long-term cost of build.</strong></p>
+          <h3>Why not only build</h3>
+          <p>Integrations across Zendesk, Microsoft, NetSuite, Slack, Jira, ClickUp are ongoing products—not a script. That is a team, not a weekend project.</p>
         </div>
         <div class="card">
-          <h3>Why start small (Devon’s direction)</h3>
-          <p>Land <strong>minimum value first</strong>: a clear scope, a few systems, a defined team. Prove fewer escalations and faster answers. <strong>Expand once the story is simple and credible</strong> for the rest of the business—avoid boiling the ocean on day one.</p>
+          <h3>Start small</h3>
+          <p>Devon + Jason aligned: <strong>minimum value first</strong>, expand when credible—same theme as <a href="#roi" style="color: var(--accent);">ROI model</a> sensitivity, not a big-bang.</p>
         </div>
       </div>
     </section>
@@ -594,7 +752,7 @@
     <section id="deployment">
       <h2>Recommended starting scope</h2>
       <p class="section-lead">
-        Make deployment scope and cost tradeoffs obvious: connect what is easy and high-value first; defer custom and migrating systems until after the first win.
+        Easy connectors first; custom/legacy after value is proven (Jason + Devon, Mar 27).
       </p>
 
       <h3 class="section-sub">Day 1 data sources (typically out-of-the-box)</h3>
@@ -654,9 +812,9 @@
     </section>
 
     <section id="commercial">
-      <h2>Commercial and implementation options</h2>
+      <h2>Implementation packages</h2>
       <p class="section-lead">
-        Outcomes-style implementation packages discussed with MCWW on the Mar 27 connect call: <strong>Starter</strong> = 20 hours at <strong>$10K</strong>; <strong>Standard</strong> = 50 hours at <strong>$25K</strong> (<strong>$15K</strong> incremental). Use Standard only if day-one scope truly needs the extra hours (e.g. custom connector work or on-prem file share—see deployment section).
+        Mar 27 connect: <strong>Starter</strong> 20h / <strong>$10K</strong> · <strong>Standard</strong> 50h / <strong>$25K</strong> (+$15K). Standard only if NAS/custom day-one work is truly required (<a href="#deployment">see NAS note</a>).
       </p>
       <div class="table-wrap">
         <table>
@@ -715,8 +873,64 @@
     </section>
 
     <div class="footer">
-      Prepared for Motor City Wash Works ownership. Narrative grounded in Gong-recorded discovery and validation (support workflow, sales/ops, Mar 27 connect on pricing and data sources). Jason &amp; Rob to align final messaging with internal stakeholders before external use.
+      Prepared for Motor City Wash Works ownership. Grounded in Gong (discovery, validation, Mar 27 pricing and scope). Jason &amp; Rob align final messaging before external use.
     </div>
   </div>
+
+  <script>
+    (function () {
+      var ids = ['engCount', 'engRate', 'supportPct', 'reclaimPct', 'ticketsMonth', 'minutesSaved', 'supportRate'];
+
+      function fmtCurrency(n) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n || 0);
+      }
+
+      function fmtNumber(n) {
+        return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n || 0);
+      }
+
+      function val(id) {
+        var el = document.getElementById(id);
+        if (!el) return 0;
+        var v = parseFloat(el.value);
+        return Number.isFinite(v) ? v : 0;
+      }
+
+      function calculate() {
+        var engCount = val('engCount');
+        var engRate = val('engRate');
+        var supportPct = val('supportPct') / 100;
+        var reclaimPct = val('reclaimPct') / 100;
+        var ticketsMonth = val('ticketsMonth');
+        var minutesSaved = val('minutesSaved');
+        var supportRate = val('supportRate');
+
+        var engHours = engCount * 2080 * supportPct * reclaimPct;
+        var engDollars = engHours * engRate;
+
+        var supportHours = ticketsMonth * 12 * (minutesSaved / 60);
+        var supportDollars = supportHours * supportRate;
+
+        var total = engDollars + supportDollars;
+
+        var ev = document.getElementById('engValue');
+        var eh = document.getElementById('engHoursText');
+        var sv = document.getElementById('supportValue');
+        var sh = document.getElementById('supportHoursText');
+        var tv = document.getElementById('totalValue');
+        if (ev) ev.textContent = fmtCurrency(engDollars);
+        if (eh) eh.textContent = fmtNumber(engHours) + ' hrs / yr';
+        if (sv) sv.textContent = fmtCurrency(supportDollars);
+        if (sh) sh.textContent = fmtNumber(supportHours) + ' hrs / yr';
+        if (tv) tv.textContent = fmtCurrency(total);
+      }
+
+      ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', calculate);
+      });
+      calculate();
+    })();
+  </script>
 </body>
 </html>
