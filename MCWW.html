@@ -477,7 +477,6 @@
         <a href="#validated">Validation</a>
         <a href="#decision">Buy vs build</a>
         <a href="#deployment">Deployment</a>
-        <a href="#commercial">Packages</a>
         <a href="#future">Later expansion</a>
       </div>
     </div>
@@ -553,7 +552,7 @@
             <div class="result">
               <h4>Combined (directional)</h4>
               <div class="big" id="totalValue">$0</div>
-              <div class="sub">Not a forecast—sensitivity-table for ownership. Implementation: <a href="#commercial" style="color: var(--accent);">$10K / $25K</a> packages.</div>
+              <div class="sub">Not a forecast—sensitivity for ownership. Weigh against subscription and services costs from your Glean proposal.</div>
             </div>
           </div>
         </div>
@@ -568,7 +567,7 @@
             <div class="check"><div class="dot">✓</div><div><strong>Land with support + sales/ops</strong> — not a company-wide transformation on day one.</div></div>
             <div class="check"><div class="dot">✓</div><div><strong>International + scale:</strong> tool-up Tier 1/2 before betting only on more hires.</div></div>
             <div class="check"><div class="dot">✓</div><div><strong>Order status:</strong> ask NetSuite-backed questions without every answer being a new report.</div></div>
-            <div class="check"><div class="dot">✓</div><div><strong>Scope:</strong> <a href="#deployment" style="color: var(--accent);">Day-1 connectors</a> first; defer NAS / Dataworks / WashLink until proven.</div></div>
+            <div class="check"><div class="dot">✓</div><div><strong>Scope:</strong> <a href="#deployment" style="color: var(--accent);">Cloud connectors first</a> (no on-prem file share at launch); defer Dataworks / WashLink until proven.</div></div>
           </div>
         </div>
 
@@ -752,11 +751,11 @@
     <section id="deployment">
       <h2>Recommended starting scope</h2>
       <p class="section-lead">
-        Easy connectors first; custom/legacy after value is proven (Jason + Devon, Mar 27).
+        Cloud/SaaS connectors first; custom and legacy after value is proven. <strong>Initial rollout does not include</strong> wiring Glean to on-premises NAS or file shares—content continues to land in Microsoft 365 as MCWW migrates, then Glean indexes there.
       </p>
 
       <h3 class="section-sub">Day 1 data sources (typically out-of-the-box)</h3>
-      <p class="section-lead" style="margin-bottom: 12px;">These are the systems called out as straightforward to connect early:</p>
+      <p class="section-lead" style="margin-bottom: 12px;">Straightforward to connect early (all cloud or standard SaaS—no on-prem file server in v1):</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -795,7 +794,7 @@
       </div>
 
       <h3 class="section-sub">Phase 2 / custom integration candidates</h3>
-      <p class="section-lead" style="margin-bottom: 12px;">Important systems—but <strong>do not pay professional services to integrate these on day one</strong> unless there is a hard blocker:</p>
+      <p class="section-lead" style="margin-bottom: 12px;">Schedule these <strong>after</strong> the first win—not in the initial rollout:</p>
       <div class="cards-2">
         <div class="card">
           <ul>
@@ -805,46 +804,10 @@
           </ul>
         </div>
         <div class="card">
-          <div class="pill pill-warn">Defer heavy spend</div>
-          <p><strong>NAS / on-prem file share:</strong> Support is already pushing to get content off local storage because tier-one reps lack access. Connecting NAS through Glean is <strong>on the order of ~40 engineering hours</strong>—so it belongs in the <strong>50-hour</strong> implementation path only if day-one access is truly worth it. On the Mar 27 call, Jason argued it <strong>does not make business sense</strong> to pay for that integration when the end state is Microsoft cloud anyway—use the project as a <strong>forcing function to finish migration</strong>, then index where files land.</p>
+          <div class="pill pill-warn">On-prem files — after migration</div>
+          <p><strong>No NAS / on-prem file share in v1.</strong> Support is moving priority content into SharePoint/OneDrive; once files live in Microsoft 365, they sit in the same Day 1 path as the rest of the Microsoft row—without a separate crawl of legacy office NAS.</p>
         </div>
       </div>
-    </section>
-
-    <section id="commercial">
-      <h2>Implementation packages</h2>
-      <p class="section-lead">
-        Mar 27 connect: <strong>Starter</strong> 20h / <strong>$10K</strong> · <strong>Standard</strong> 50h / <strong>$25K</strong> (+$15K). Standard only if NAS/custom day-one work is truly required (<a href="#deployment">see NAS note</a>).
-      </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Package</th>
-              <th>Implementation hours</th>
-              <th>PS investment (discussed)</th>
-              <th>When it fits</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Starter</strong></td>
-              <td>20</td>
-              <td>$10,000</td>
-              <td>Supported connectors first (NetSuite, Zendesk, Microsoft, Slack, ClickUp, Jira, etc.), focused teams, prove value without paying for heavy custom integration.</td>
-            </tr>
-            <tr>
-              <td><strong>Standard</strong></td>
-              <td>50</td>
-              <td>$25,000</td>
-              <td>Extra scope: additional enablement, connector consultation, or day-one need for work that would otherwise exceed the Starter block—confirm before defaulting here.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="section-lead" style="margin-top: 16px; margin-bottom: 0; font-size: 15px;">
-        Reference: Gong · <a href="https://us-4493.app.gong.io/call?id=5872743841652297305" style="color: var(--accent);">MCWW | Glean Connect</a> (pricing stated by Devon Buchanan; Jason aligned on using these figures toward a formal quote).
-      </p>
     </section>
 
     <section id="future">
@@ -873,7 +836,7 @@
     </section>
 
     <div class="footer">
-      Prepared for Motor City Wash Works ownership. Grounded in Gong (discovery, validation, Mar 27 pricing and scope). Jason &amp; Rob align final messaging before external use.
+      Prepared for Motor City Wash Works ownership. Grounded in Gong (discovery, validation, Mar 27 scope discussion). Jason &amp; Rob align final messaging before external use.
     </div>
   </div>
 
