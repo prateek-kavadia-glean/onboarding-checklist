@@ -1,0 +1,1773 @@
+<![CDATA[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technology-Enabled Behavioral Health Landscape</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --panel:#ffffff;
+      --panel-2:#fafafa;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:rgba(0,0,0,0.08);
+      --line-2:rgba(0,0,0,0.05);
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,0.08);
+      --green:#1f7a4d;
+      --amber:#a15c00;
+      --shadow:0 1px 3px rgba(0,0,0,0.06),0 12px 32px rgba(0,0,0,0.05);
+      --radius:18px;
+      --radius-sm:12px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .page{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 20px 64px;
+      animation:fadeUp .45s ease both;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:40;
+      backdrop-filter:blur(20px);
+      background:rgba(245,245,247,.82);
+      border-bottom:1px solid var(--line-2);
+    }
+
+    .topbar-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 20px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      background:linear-gradient(180deg,#0b84ff,#0071e3);
+      box-shadow:0 10px 30px rgba(0,113,227,.18);
+      position:relative;
+    }
+
+    .brand-mark:before,
+    .brand-mark:after{
+      content:"";
+      position:absolute;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+    }
+
+    .brand-mark:before{
+      width:16px;height:4px;left:9px;top:10px;
+    }
+
+    .brand-mark:after{
+      width:10px;height:4px;left:12px;top:19px;
+    }
+
+    .brand-text{
+      min-width:0;
+    }
+
+    .eyebrow{
+      font-size:11px;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+
+    .brand-title{
+      font-size:15px;
+      font-weight:600;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .nav-links a,
+    .filter-btn,
+    .pill,
+    .toggle{
+      transition:background-color .2s ease, transform .15s ease, border-color .2s ease, color .2s ease, opacity .2s ease;
+    }
+
+    .nav-links a{
+      font-size:13px;
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+    }
+
+    .nav-links a:hover,
+    .filter-btn:hover,
+    .toggle:hover{
+      background:rgba(0,0,0,.04);
+      transform:translateY(-1px);
+    }
+
+    .nav-links a:active,
+    .filter-btn:active,
+    .toggle:active{
+      transform:scale(.98);
+    }
+
+    .hero{
+      padding:44px 0 18px;
+      display:grid;
+      grid-template-columns:1.35fr .9fr;
+      gap:24px;
+      align-items:end;
+    }
+
+    .hero-card{
+      background:var(--panel);
+      border:1px solid var(--line-2);
+      border-radius:28px;
+      padding:34px;
+      box-shadow:var(--shadow);
+    }
+
+    h1{
+      margin:0 0 14px;
+      font-size:42px;
+      line-height:1.04;
+      font-weight:700;
+      letter-spacing:-.03em;
+      max-width:12ch;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.58;
+      max-width:62ch;
+    }
+
+    .stat-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .stat{
+      background:var(--panel-2);
+      border:1px solid var(--line-2);
+      border-radius:18px;
+      padding:18px;
+      min-height:110px;
+    }
+
+    .stat .num{
+      font-size:30px;
+      font-weight:700;
+      line-height:1;
+      margin-bottom:8px;
+      letter-spacing:-.03em;
+    }
+
+    .stat .label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .stat .sub{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      margin-top:28px;
+      background:var(--panel);
+      border:1px solid var(--line-2);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .section-head{
+      padding:28px 30px 18px;
+      border-bottom:1px solid var(--line-2);
+      display:flex;
+      gap:16px;
+      align-items:flex-end;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .section-title{
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:-.02em;
+      margin:0;
+    }
+
+    .section-sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.55;
+      max-width:70ch;
+    }
+
+    .section-body{
+      padding:26px 30px 30px;
+    }
+
+    .summary-grid,
+    .segment-grid,
+    .trend-grid{
+      display:grid;
+      grid-template-columns:repeat(12,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .summary-card,
+    .segment-card,
+    .trend-card,
+    .takeaway{
+      background:var(--panel-2);
+      border:1px solid var(--line-2);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .summary-card{grid-column:span 4}
+    .segment-card{grid-column:span 4}
+    .trend-card{grid-column:span 6}
+
+    .card-label{
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+
+    .card-title{
+      font-size:18px;
+      font-weight:600;
+      letter-spacing:-.02em;
+      margin:0 0 10px;
+    }
+
+    .card-copy{
+      margin:0;
+      font-size:14px;
+      line-height:1.58;
+      color:var(--muted);
+    }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+
+    .search-wrap{
+      flex:1 1 320px;
+      position:relative;
+    }
+
+    .search{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:14px 16px 14px 42px;
+      font-size:14px;
+      outline:none;
+      color:var(--text);
+      transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+
+    .search:focus{
+      border-color:rgba(0,113,227,.45);
+      box-shadow:0 0 0 3px rgba(0,113,227,.18);
+    }
+
+    .search-icon{
+      position:absolute;
+      left:15px;
+      top:50%;
+      transform:translateY(-50%);
+      width:14px;
+      height:14px;
+      border:2px solid #8e8e93;
+      border-radius:999px;
+    }
+
+    .search-icon:after{
+      content:"";
+      position:absolute;
+      width:7px;
+      height:2px;
+      background:#8e8e93;
+      right:-5px;
+      bottom:-2px;
+      transform:rotate(45deg);
+      border-radius:4px;
+    }
+
+    .filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .filter-btn,
+    .toggle{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--muted);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    .filter-btn.active{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border-color:rgba(0,113,227,.18);
+    }
+
+    .segment-block{
+      margin-top:28px;
+    }
+
+    .segment-block:first-of-type{margin-top:0}
+
+    .segment-block h3{
+      margin:0 0 10px;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .segment-meta{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+      max-width:76ch;
+    }
+
+    .company-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    details.company-card{
+      background:var(--panel-2);
+      border:1px solid var(--line-2);
+      border-radius:22px;
+      overflow:hidden;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    details.company-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 1px 3px rgba(0,0,0,.04),0 12px 28px rgba(0,0,0,.05);
+    }
+
+    details.company-card[open]{
+      border-color:rgba(0,113,227,.18);
+      box-shadow:0 1px 3px rgba(0,0,0,.04),0 16px 36px rgba(0,0,0,.06);
+    }
+
+    details summary{
+      list-style:none;
+      cursor:pointer;
+      padding:20px 20px 16px;
+    }
+
+    details summary::-webkit-details-marker{display:none}
+
+    .summary-top{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .company-name{
+      margin:0;
+      font-size:18px;
+      font-weight:600;
+      letter-spacing:-.02em;
+    }
+
+    .company-tagline{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .caret{
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line-2);
+      position:relative;
+      flex:0 0 auto;
+    }
+
+    .caret:before,
+    .caret:after{
+      content:"";
+      position:absolute;
+      background:#8e8e93;
+      border-radius:4px;
+      top:13px;
+      width:8px;
+      height:2px;
+      transition:transform .2s ease;
+    }
+
+    .caret:before{left:8px;transform:rotate(45deg)}
+    .caret:after{right:8px;transform:rotate(-45deg)}
+    details[open] .caret:before{transform:rotate(-45deg)}
+    details[open] .caret:after{transform:rotate(45deg)}
+
+    .tag-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--muted);
+      background:#fff;
+      border:1px solid var(--line-2);
+      border-radius:999px;
+      padding:7px 10px;
+    }
+
+    .company-body{
+      padding:0 20px 20px;
+      border-top:1px solid var(--line-2);
+      background:rgba(255,255,255,.55);
+    }
+
+    .body-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      padding-top:16px;
+    }
+
+    .mini{
+      background:#fff;
+      border:1px solid var(--line-2);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .mini h4{
+      margin:0 0 8px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .mini ul{
+      margin:0;
+      padding-left:18px;
+      color:var(--text);
+      font-size:13.5px;
+      line-height:1.55;
+    }
+
+    .mini li+li{margin-top:6px}
+
+    .takeaways{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .takeaway h4{
+      margin:0 0 8px;
+      font-size:15px;
+      letter-spacing:-.01em;
+    }
+
+    .takeaway p{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .hidden{display:none !important}
+
+    .empty{
+      text-align:center;
+      padding:26px;
+      color:var(--muted);
+      font-size:14px;
+      border:1px dashed var(--line);
+      border-radius:18px;
+      background:#fff;
+      display:none;
+    }
+
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .legend .pill.blue{background:var(--accent-soft); color:var(--accent); border-color:rgba(0,113,227,.18)}
+    .legend .pill.green{background:rgba(31,122,77,.08); color:var(--green); border-color:rgba(31,122,77,.14)}
+    .legend .pill.amber{background:rgba(161,92,0,.08); color:var(--amber); border-color:rgba(161,92,0,.14)}
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(12px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr}
+      .summary-card,.segment-card,.trend-card{grid-column:span 12}
+      .company-grid{grid-template-columns:1fr}
+      .takeaways{grid-template-columns:1fr}
+      .body-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 760px){
+      .topbar-inner{align-items:flex-start;flex-direction:column}
+      h1{font-size:34px}
+      .hero-card{padding:24px}
+      .section-head,.section-body{padding-left:20px;padding-right:20px}
+      .nav-links{justify-content:flex-start}
+      .stat-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media (max-width: 540px){
+      .stat-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <div class="eyebrow">Interactive research website</div>
+          <div class="brand-title">Technology-Enabled Behavioral Health Landscape</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#segments">Segments</a>
+        <a href="#companies">Competitors</a>
+        <a href="#trends">Trends</a>
+        <a href="#implications">Implications</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Market landscape · 2026</div>
+        <h1>Behavioral health is consolidating into platforms, specialists, and infrastructure.</h1>
+        <p>
+          This site organizes the competitive landscape by <strong>market segment</strong>, not alphabetically:
+          enterprise employer/payer platforms, high-acuity value-based providers, collaborative-care integrators,
+          pediatric and family specialists, and software-heavy digital therapeutics. Each competitor is profiled
+          across <strong>core product</strong>, <strong>go-to-market</strong>, <strong>target customers</strong>,
+          <strong>funding and scale</strong>, and <strong>technology differentiation</strong>.
+        </p>
+        <div class="legend">
+          <span class="pill blue">AI and data platform</span>
+          <span class="pill green">Value-based or risk-bearing</span>
+          <span class="pill amber">Family / pediatric specialist</span>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Market segments</div>
+          <div class="num">5</div>
+          <div class="sub">Distinct competitive arenas with different buyers, economics, and product expectations.</div>
+        </div>
+        <div class="stat">
+          <div class="label">Major competitors</div>
+          <div class="num">29</div>
+          <div class="sub">From enterprise virtual platforms to SMI/SUD payviders and software-first DTx players.</div>
+        </div>
+        <div class="stat">
+          <div class="label">Most important shift</div>
+          <div class="num">AI + VBC</div>
+          <div class="sub">Access alone no longer differentiates. Buyers now want outcomes, efficiency, and total-cost impact.</div>
+        </div>
+        <div class="stat">
+          <div class="label">Near-term horizon</div>
+          <div class="num">12–18m</div>
+          <div class="sub">Expect consolidation, payer influence, primary-care integration, and stricter parity/privacy scrutiny.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Executive overview</h2>
+          <p class="section-sub">
+            The market has moved beyond generic teletherapy. Winning models now combine multi-stakeholder workflows,
+            measurement-based care, stronger plan or employer economics, and increasingly, AI-enabled operations.
+          </p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="card-label">What changed</div>
+            <h3 class="card-title">Virtual access became table stakes</h3>
+            <p class="card-copy">
+              Most serious vendors now offer some mix of virtual therapy, psychiatry, coaching, and digital content.
+              Differentiation has shifted to outcomes, acuity coverage, integration depth, and buyer economics.
+            </p>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Who controls spend</div>
+            <h3 class="card-title">Payers and systems are gaining leverage</h3>
+            <p class="card-copy">
+              Employers still buy heavily, but parity pressure, utilization growth, and point-solution fatigue are pushing
+              more control toward health plans, provider systems, and integrated ecosystems.
+            </p>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Technology moat</div>
+            <h3 class="card-title">Data + workflow beat simple marketplaces</h3>
+            <p class="card-copy">
+              The strongest platforms combine proprietary routing, care registries, outcomes analytics, and AI-enabled clinician
+              workflows rather than acting as scheduling layers on top of therapist supply.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="segments">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Segment map</h2>
+          <p class="section-sub">
+            The market is most useful when split by buyer, acuity, and operating model.
+          </p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="segment-grid">
+          <div class="segment-card">
+            <div class="card-label">Segment 1</div>
+            <h3 class="card-title">Enterprise virtual mental health platforms</h3>
+            <p class="card-copy">
+              Buyer: employers and health plans. Typical wedge: EAP replacement, workforce benefit, or virtual behavioral carve-out.
+              Representative players: Lyra, Spring, Modern Health, Headspace, Talkspace, BetterHelp for Work, Included Health.
+            </p>
+          </div>
+          <div class="segment-card">
+            <div class="card-label">Segment 2</div>
+            <h3 class="card-title">High-acuity, SMI/SUD, and value-based specialists</h3>
+            <p class="card-copy">
+              Buyer: Medicaid MCOs, MA plans, risk-bearing providers. Typical wedge: severe mental illness, addiction,
+              dual-diagnosis, and total-cost-of-care reduction. Representative players: Eleanor, Quartet, Cityblock, Amae, Author.
+            </p>
+          </div>
+          <div class="segment-card">
+            <div class="card-label">Segment 3</div>
+            <h3 class="card-title">Collaborative-care and primary-care integration</h3>
+            <p class="card-copy">
+              Buyer: health systems, PCP groups, ACOs, and sometimes payers. Typical wedge: CoCM, BH integration billing,
+              psychiatric consult support, and registry-driven care management. Representative players: Concert, Mindoula, Array.
+            </p>
+          </div>
+          <div class="segment-card">
+            <div class="card-label">Segment 4</div>
+            <h3 class="card-title">Pediatric and family-focused platforms</h3>
+            <p class="card-copy">
+              Buyer: schools, pediatric practices, employers, and health plans. Typical wedge: youth therapy, psychiatry,
+              parent support, school-based access, and neurodiversity. Representative players: Bend, Hazel, Brightline.
+            </p>
+          </div>
+          <div class="segment-card">
+            <div class="card-label">Segment 5</div>
+            <h3 class="card-title">Software-heavy digital therapeutics and AI support</h3>
+            <p class="card-copy">
+              Buyer: employers, plans, and systems. Typical wedge: low-cost first-line treatment, CBT programs,
+              AI companions, and clinician-augmented digital pathways. Representative players: Big Health, Woebot, SilverCloud.
+            </p>
+          </div>
+          <div class="segment-card">
+            <div class="card-label">What to watch</div>
+            <h3 class="card-title">Convergence is increasing</h3>
+            <p class="card-copy">
+              Enterprise platforms are moving into pediatrics and specialty care; SMI/SUD vendors are adding analytics and AI;
+              collaborative-care vendors are becoming more payer-facing; and DTx vendors are seeking deeper clinical integration.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="companies">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Competitive landscape</h2>
+          <p class="section-sub">
+            Search across companies or filter by segment. Each card includes product, GTM, customer focus, scale, and technology differentiation.
+          </p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="controls">
+          <div class="search-wrap">
+            <div class="search-icon" aria-hidden="true"></div>
+            <input id="search" class="search" type="text" placeholder="Search company, buyer, product, or keyword…" />
+          </div>
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="enterprise">Enterprise</button>
+            <button class="filter-btn" data-filter="acuity">High-acuity / VBC</button>
+            <button class="filter-btn" data-filter="integration">Primary care / CoCM</button>
+            <button class="filter-btn" data-filter="pediatric">Pediatric / family</button>
+            <button class="filter-btn" data-filter="software">Software / DTx</button>
+          </div>
+        </div>
+
+        <div class="empty" id="emptyState">No competitors match the current search or filter.</div>
+
+        <div class="segment-block" data-block="enterprise">
+          <h3>1. Enterprise virtual mental health platforms</h3>
+          <p class="segment-meta">
+            These companies typically sell to <strong>large employers</strong>, increasingly to <strong>health plans</strong>,
+            and sometimes to health systems. Their shared pitch is broad access, measurable outcomes, and workforce-level mental
+            health strategy rather than point-in-time therapy visits.
+          </p>
+          <div class="company-grid">
+
+            <details class="company-card" data-segment="enterprise" data-keywords="lyra workforce employer health plan therapy psychiatry matching ai outcomes eap">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Lyra Health</h4>
+                    <p class="company-tagline">Outcomes-driven workforce mental health platform with broad acuity coverage, global reach, and expanding pediatric depth.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Employers</span>
+                  <span class="pill">Health plans</span>
+                  <span class="pill">Therapy + psychiatry</span>
+                  <span class="pill">AI matching</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Stepped model across self-guided CBT, coaching, therapy, psychiatry, SUD, and crisis pathways.</li>
+                      <li>Increasingly whole-family after Bend acquisition.</li>
+                      <li>Acts like a next-gen EAP plus clinical specialty network.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Large self-insured employers first; growing health-plan and health-system presence.</li>
+                      <li>Typical sale centers on workforce outcomes, access, and medical spend reduction.</li>
+                      <li>Commercial model is usually PEPM/PMPM with guarantees.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>20M+ covered people globally.</li>
+                      <li>$900M+ raised and among the best-capitalized players in the segment.</li>
+                      <li>Used by major enterprise accounts and increasingly positioned as a category leader.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>AI-powered routing and matching.</li>
+                      <li>Mature measurement-based care and outcomes reporting.</li>
+                      <li>Lyra Empower adds AI-enabled navigation and operations support.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="spring health employers payers precision mental health matching machine learning atlas therapy coaching psychiatry">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Spring Health</h4>
+                    <p class="company-tagline">Precision mental health platform built around machine-learning-based triage, care matching, and employer analytics.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Employers</span>
+                  <span class="pill">Payers</span>
+                  <span class="pill">Precision matching</span>
+                  <span class="pill">Analytics</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Stepped model spanning digital content, coaching, therapy, psychiatry, and family care.</li>
+                      <li>Strong emphasis on precision assessments and provider matching.</li>
+                      <li>Broadening into teens, eating disorders, neurodiversity, and workplace crisis support.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Employer-first with increasing payer partnerships.</li>
+                      <li>Buyers are CHROs, benefits leaders, and population health teams.</li>
+                      <li>Usually priced as PEPM/PMPM; more enterprise than SMB friendly.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>20M+ people served globally and 450+ large employers.</li>
+                      <li>Raised roughly $466M+ with unicorn valuation.</li>
+                      <li>High-profile relationships with large enterprises and payer partners like Highmark.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>ML-based assessment and routing.</li>
+                      <li>Atlas analytics platform for benefits teams.</li>
+                      <li>Notable focus on ethical AI benchmarking through VERA-MH.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="modern health global employer coaching therapy psychiatry adaptive care model deib">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Modern Health</h4>
+                    <p class="company-tagline">Global workforce platform with a coaching-forward adaptive care model and strong DEIB positioning.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Global employers</span>
+                  <span class="pill">Coaching</span>
+                  <span class="pill">Therapy + psychiatry</span>
+                  <span class="pill">Flexible pricing</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Adaptive care model across self-guided programs, coaching, therapy, and psychiatry.</li>
+                      <li>Built for distributed workforces with strong cultural and language coverage.</li>
+                      <li>Often positioned as broader wellbeing plus clinical mental health.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Global multinationals and some health plans.</li>
+                      <li>Sells into HR, total rewards, and global wellbeing leaders.</li>
+                      <li>More flexible commercial posture than some peers, including usage-based options.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Roughly $170M raised.</li>
+                      <li>Known for strong international coverage and equity-oriented messaging.</li>
+                      <li>ROI claims emphasize savings from moderate-need populations, not just crisis care.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Algorithmic routing across care levels.</li>
+                      <li>Population analytics by geography, language, and employee segment.</li>
+                      <li>Responsible AI and culturally responsive care are key parts of the pitch.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="headspace ginger ebb mindfulness coaching therapy psychiatry eap organizations">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Headspace Health</h4>
+                    <p class="company-tagline">Consumer-grade engagement engine merged with coaching, therapy, psychiatry, and EAP infrastructure.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">EAP replacement</span>
+                  <span class="pill">Mindfulness</span>
+                  <span class="pill">Coaching</span>
+                  <span class="pill">AI companion</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Mindfulness and sleep content from Headspace, layered with Ginger’s 24/7 coaching and clinical care.</li>
+                      <li>Therapy, psychiatry, and work-life services wrapped into a single enterprise offering.</li>
+                      <li>Works well as a prevention-heavy, engagement-led front door.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Sells to employers, health plans, consultants, and SMBs.</li>
+                      <li>Strong fit where brand recognition and engagement matter as much as clinical depth.</li>
+                      <li>Often used as a broad wellbeing plus BH bundle.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>4,000+ organizational clients and 190+ country reach.</li>
+                      <li>Among the best-known mental health technology brands in the world.</li>
+                      <li>Backed by a deep research record and large enterprise footprint.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Ebb AI companion for triage and support.</li>
+                      <li>Deep content library and consumer-grade engagement mechanics.</li>
+                      <li>Large evidence base across mindfulness and digital mental health outcomes.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="talkspace messaging therapy public company employers plans psychiatry asynchronous">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Talkspace</h4>
+                    <p class="company-tagline">Messaging-first therapy and psychiatry platform with both DTC and employer/payer distribution.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Messaging therapy</span>
+                  <span class="pill">Public company</span>
+                  <span class="pill">Employers</span>
+                  <span class="pill">Plans</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Asynchronous therapy via messaging, with optional live video and telepsychiatry.</li>
+                      <li>Supports individuals, couples, and teens.</li>
+                      <li>Best suited to convenience and accessibility rather than deep stepped-care orchestration.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Hybrid DTC + B2B motion.</li>
+                      <li>Sold into employers, plans, and brokers as an EAP alternative or digital therapy benefit.</li>
+                      <li>Competes on access, convenience, and lower-friction therapy engagement.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>National coverage in all 50 states.</li>
+                      <li>Large brand recognition from consumer business.</li>
+                      <li>Public company status increases transparency but also market pressure.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Mature asynchronous therapist workflows.</li>
+                      <li>Platform designed around text-based engagement at scale.</li>
+                      <li>Published data supports improvements in symptoms and work productivity.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="betterhelp for work teladoc employer usage based therapy large therapist network">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">BetterHelp for Work</h4>
+                    <p class="company-tagline">Mass-scale virtual therapy network adapted for employers and plans with usage-based enterprise pricing.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Usage-based</span>
+                  <span class="pill">Teladoc</span>
+                  <span class="pill">Therapy network</span>
+                  <span class="pill">Access play</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Primarily virtual therapy with messaging between visits.</li>
+                      <li>Adults, couples, and teens; lighter on high-acuity orchestration than Lyra or Spring.</li>
+                      <li>Very strong therapist supply and broad consumer familiarity.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Dual DTC + enterprise motion via Teladoc ecosystem.</li>
+                      <li>Enterprise wedge is simplicity and cost control rather than deep clinical infrastructure.</li>
+                      <li>Usage-based pricing is an important commercial differentiator.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>One of the largest online therapy brands in the world.</li>
+                      <li>Embedded inside Teladoc’s broader virtual care portfolio.</li>
+                      <li>Frequently appears in employer BH shortlists due to brand and reach.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Operational scale in virtual therapist supply.</li>
+                      <li>Platform well-optimized for matching, scheduling, and message-based care.</li>
+                      <li>Less differentiated on employer analytics or measurement-based care than top enterprise peers.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="enterprise" data-keywords="included health navigation virtual care behavioral primary care employer plan front door">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Included Health</h4>
+                    <p class="company-tagline">Navigation-first virtual care platform that blends behavioral health with primary care, advocacy, and specialty guidance.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Navigation</span>
+                  <span class="pill">Primary + BH</span>
+                  <span class="pill">Employers</span>
+                  <span class="pill">Plans</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Single front door for virtual primary care, behavioral health, navigation, billing support, and expert opinions.</li>
+                      <li>Behavioral health is one pillar within a broader care and navigation stack.</li>
+                      <li>Appeals to buyers that want fewer point solutions.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Large employers, health plans, public sector, and labor groups.</li>
+                      <li>Sold as a unified navigation and care layer rather than a standalone behavioral vendor.</li>
+                      <li>Competitive whenever medical + behavioral integration matters.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Millions of members across 300+ partners.</li>
+                      <li>National footprint across all 50 states.</li>
+                      <li>Strong enterprise credibility from legacy Grand Rounds + Doctor on Demand roots.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Claims, navigation, and virtual-care data integrated into one experience.</li>
+                      <li>Multi-service orchestration is the key moat.</li>
+                      <li>Less specialized in behavioral depth, stronger in front-door experience and benefit navigation.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+
+        <div class="segment-block" data-block="acuity">
+          <h3>2. High-acuity, SMI/SUD, and value-based specialists</h3>
+          <p class="segment-meta">
+            These companies focus on <strong>serious mental illness</strong>, <strong>substance use disorder</strong>, and other
+            high-cost populations. Their most common buyers are <strong>Medicaid MCOs</strong>, <strong>Medicare Advantage plans</strong>,
+            and <strong>risk-bearing providers</strong>. The central economic claim is reduced ED use, inpatient utilization, or total cost of care.
+          </p>
+          <div class="company-grid">
+
+            <details class="company-card" data-segment="acuity" data-keywords="eleanor health sud addiction value based medicaid medicare advantage harm reduction">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Eleanor Health</h4>
+                    <p class="company-tagline">Value-based addiction and mental health provider built around longitudinal, whole-person recovery.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">SUD</span>
+                  <span class="pill">Value-based</span>
+                  <span class="pill">Medicaid / MA</span>
+                  <span class="pill">Hybrid clinics</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Hybrid SUD + mental health model with MAT, therapy, psychiatry, peers, nursing, and SDOH support.</li>
+                      <li>Harm-reduction oriented and explicitly built for co-occurring physical and behavioral complexity.</li>
+                      <li>Longitudinal relationship model rather than episodic rehab.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>National and regional Medicaid, MA, and commercial payer contracts.</li>
+                      <li>Strong value-based orientation with PMPM/shared-savings structures.</li>
+                      <li>Also acts as a high-acuity backend for broader digital mental health partners.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Roughly $130M+ raised across multiple rounds.</li>
+                      <li>17+ payer contracts across several core states.</li>
+                      <li>Published outcomes focus on large reductions in ED and inpatient utilization.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Population analytics for attribution and risk identification.</li>
+                      <li>Measurement-based care tracking for cravings, symptoms, and longitudinal recovery.</li>
+                      <li>Value-based reporting infrastructure is core, not peripheral.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="valera health virtual psychiatry smi medicaid medicare advantage suicide prevention vita">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Valera Health</h4>
+                    <p class="company-tagline">Virtual psychiatric medical group serving mild-to-SMI populations, increasingly deep in MA and suicide prevention.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Virtual psychiatry</span>
+                  <span class="pill">SMI</span>
+                  <span class="pill">MA / Medicaid</span>
+                  <span class="pill">In-network</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Therapy, group therapy, psychiatry, and medication management for adults and children.</li>
+                      <li>Handles higher-acuity populations that many digital BH vendors avoid.</li>
+                      <li>Post-Vita acquisition, deeper into suicide prevention and high-risk youth.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Primarily health plans, universities, and provider partners.</li>
+                      <li>Strong Medicaid and Medicare Advantage orientation.</li>
+                      <li>Core business remains in-network FFS with growing VBC ambitions.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>37M+ covered lives through health-plan relationships.</li>
+                      <li>$79M+ raised.</li>
+                      <li>Humana MA and Point32Health relationships are strategically important.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Virtual care platform designed for coordinated therapist + psychiatrist workflows.</li>
+                      <li>Measurement-based care and quality metrics for higher-acuity panels.</li>
+                      <li>Less about consumer UX, more about network adequacy and specialty capacity.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="aptihealth higher acuity behavioral health ed discharge health system value based">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">aptihealth</h4>
+                    <p class="company-tagline">Virtual higher-acuity behavioral platform embedded into regional health systems and payer workflows.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Health systems</span>
+                  <span class="pill">ED discharge</span>
+                  <span class="pill">Higher acuity</span>
+                  <span class="pill">Workflow platform</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Virtual therapy, psychiatry, and care coordination for higher-acuity depression, anxiety, SMI, and SUD.</li>
+                      <li>Often activated at transition points like ED discharge or inpatient step-down.</li>
+                      <li>Works as a specialty layer for health systems short on BH capacity.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Regional health plans and health systems first.</li>
+                      <li>Embedded referral and EHR integration are central to the sale.</li>
+                      <li>Mix of FFS and performance-based arrangements.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>$65M+ raised.</li>
+                      <li>Partnerships with CDPHP, Albany Med, St. Peter’s, and other Northeast players.</li>
+                      <li>Often strongest in markets where system-level BH bottlenecks are acute.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Referral, triage, and collaborative care workflows built for health system integration.</li>
+                      <li>Evidence-based assessments and longitudinal outcomes tracking.</li>
+                      <li>Technology moat is operational workflow depth rather than marketplace scale.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="quartet health smi whole health clover care enablement matching network analytics value based">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Quartet Health</h4>
+                    <p class="company-tagline">Behavioral care enablement platform evolving into a full-risk SMI and whole-health provider.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">SMI</span>
+                  <span class="pill">Full-risk</span>
+                  <span class="pill">Matching engine</span>
+                  <span class="pill">Payers</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Started with identification and matching into in-network BH care.</li>
+                      <li>Now operates SMI clinic services and Whole Health programs that integrate physical, behavioral, and social care.</li>
+                      <li>Bridges network enablement and direct care delivery.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Health plans, systems, CMHCs, and FQHCs across 39 states.</li>
+                      <li>Legacy contracts focused on access and network activation.</li>
+                      <li>Newer models include full-risk MA SMI partnerships like Clover Health.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>20,000+ external providers and 200+ clinicians in its own group.</li>
+                      <li>500,000+ patients touched annually.</li>
+                      <li>More than $200M raised historically and now part of NeuroFlow.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Claims + EHR-based identification and referral workflows.</li>
+                      <li>Measurement-based care and value-based analytics are central.</li>
+                      <li>One of few players combining enablement infrastructure with SMI risk-bearing care.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="cityblock medicaid duals primary behavioral social care value based full risk ltss">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Cityblock Health</h4>
+                    <p class="company-tagline">Full-stack, full-risk primary + behavioral + social care platform for Medicaid and dually eligible populations.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Full-risk</span>
+                  <span class="pill">Medicaid / duals</span>
+                  <span class="pill">Community care</span>
+                  <span class="pill">LTSS</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Integrated medical, behavioral, and SDOH support through neighborhood hubs, home visits, and virtual care.</li>
+                      <li>Advanced Behavioral Health program addresses SMI and SUD inside the broader model.</li>
+                      <li>Designed for the highest-cost, hardest-to-engage Medicaid and dual cohorts.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Capitated or globally budgeted contracts with Medicaid MCOs and duals plans.</li>
+                      <li>Health-plan and system partnerships often anchor new-market launches.</li>
+                      <li>Sold as a whole-person population health engine, not a BH point solution.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>100,000+ members across 10+ states.</li>
+                      <li>Over $1B in annual revenue and roughly $886M raised.</li>
+                      <li>One of the largest and most ambitious payvider models in the space.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Claims, SDOH, field, and clinical data integrated into one operating platform.</li>
+                      <li>AI and ML for segmentation, prioritization, and emerging LTSS workflows.</li>
+                      <li>Technology is built to support distributed, community-based teams at scale.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="firsthand smi peers medicaid total cost of care field based carelon">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">firsthand</h4>
+                    <p class="company-tagline">Peer-led, field-based serious mental illness model built for total-cost-of-care contracts in Medicaid.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">SMI</span>
+                  <span class="pill">Peers</span>
+                  <span class="pill">Field outreach</span>
+                  <span class="pill">TCoC</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Peer-majority field teams supported by psych-savvy NPs and care staff.</li>
+                      <li>Designed for unengaged, high-cost SMI patients in homes, shelters, and community settings.</li>
+                      <li>Handles behavioral, physical, and social needs together.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Medicaid managed care organizations are the core buyer.</li>
+                      <li>Contracts emphasize total-cost accountability and engagement of the hardest-to-reach members.</li>
+                      <li>Commercial story is limited; payer dependency is high.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Raised roughly $43M including GV support.</li>
+                      <li>Notable partnerships with Carelon and others.</li>
+                      <li>Contract volatility has already shown how fragile the model can be operationally.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Purpose-built CRM and analytics for peer workflows and payer targeting.</li>
+                      <li>Data-driven case targeting and engagement management.</li>
+                      <li>Differentiation is less about flashy AI and more about tech supporting field operations.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="amae health severe mental illness clinics psychiatry precision medicine palantir wearables">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Amae Health</h4>
+                    <p class="company-tagline">Clinic-first SMI center of excellence combining high-touch psychiatry with precision data infrastructure.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">SMI</span>
+                  <span class="pill">Clinic-first</span>
+                  <span class="pill">Precision platform</span>
+                  <span class="pill">Health systems</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>In-person intensive SMI programs for psychosis, bipolar disorder, TRD, and severe mood disorders.</li>
+                      <li>Strong integration of psychiatry, primary care, therapy, coaching, peers, and life goals.</li>
+                      <li>Much more center-of-excellence than marketplace or teletherapy platform.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Payers plus academic and major health systems.</li>
+                      <li>Warm-handoff partnerships from EDs and inpatient psych units are critical.</li>
+                      <li>Value story centers on readmission reduction and sustained stabilization.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>More than $50M raised across multiple rounds.</li>
+                      <li>Clinics in Los Angeles, New York, and North Carolina with expansion plans.</li>
+                      <li>Strong institutional partnerships with Cedars-Sinai, Stanford, and others.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Palantir-based precision platform aggregating EHR, labs, PROMs, and wearables.</li>
+                      <li>AI support for patient-at-a-glance views and risk detection.</li>
+                      <li>More biologically and clinically sophisticated than most digital BH peers.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="acuity" data-keywords="author health medicare advantage seniors smi dementia sud virtual value based">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Author Health</h4>
+                    <p class="company-tagline">Medicare-focused behavioral health specialist for older adults with SMI, dementia, and substance use disorder.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Medicare Advantage</span>
+                  <span class="pill">Seniors</span>
+                  <span class="pill">Dementia</span>
+                  <span class="pill">Value-based</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Virtual-first psychiatry, therapy, nursing, and community support for complex Medicare populations.</li>
+                      <li>Targets SMI, dementia, and SUD in MA and SNP populations.</li>
+                      <li>Often coordinated with senior primary care partners.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>MA plans and aligned PCP organizations are the primary channel.</li>
+                      <li>Competes on network adequacy, geriatric specialization, and reduced avoidable utilization.</li>
+                      <li>Buyer value is stronger MA performance without building in-house geriatric BH networks.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Launched with $115M in financing.</li>
+                      <li>Expanded into at least five states quickly.</li>
+                      <li>Still earlier-stage than some peers, but strategically well-funded.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Coordinated virtual platform for MA populations with PCP integration.</li>
+                      <li>Experimenting with AI assistants for between-visit support.</li>
+                      <li>Differentiated more by population focus than by consumer-facing product polish.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+
+        <div class="segment-block" data-block="integration">
+          <h3>3. Primary care and collaborative-care integration</h3>
+          <p class="segment-meta">
+            This segment is defined by <strong>embedded behavioral health</strong>: collaborative care, psychiatric consult support,
+            registry-driven workflows, BHI billing, and integration into PCP and hospital systems.
+          </p>
+          <div class="company-grid">
+
+            <details class="company-card" data-segment="integration" data-keywords="concert health collaborative care cocm primary care registry psychiatric consultant">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Concert Health</h4>
+                    <p class="company-tagline">Turnkey collaborative-care medical group for primary care, women’s health, and pediatrics.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">CoCM</span>
+                  <span class="pill">Primary care</span>
+                  <span class="pill">Medical group</span>
+                  <span class="pill">Registry</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Behavioral care managers and psychiatric consultants embedded into PCP workflows.</li>
+                      <li>Evidence-based collaborative care with treat-to-target measurement.</li>
+                      <li>Acts as a managed BH extension of primary care rather than a separate destination.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Health systems, large medical groups, and some payer-sponsored networks.</li>
+                      <li>Commercial fit is strongest where CoCM reimbursement can be operationalized at scale.</li>
+                      <li>Often sold as a turnkey service line with implementation and revenue-cycle support.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>150,000+ patients cared for.</li>
+                      <li>350+ masters-level clinicians and 20+ psychiatric consultants.</li>
+                      <li>Operates across 19 states with major system relationships.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Registry and outcomes workflows embedded into referring EMRs.</li>
+                      <li>Measurement-based care is baked into operations and reporting.</li>
+                      <li>High operational maturity around CoCM implementation.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="integration" data-keywords="mindoula collaborative care program population health medicaid predictive analytics registry athenahealth">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Mindoula</h4>
+                    <p class="company-tagline">Population-health BH partner combining virtual collaborative care overlays with high-risk Medicaid programs.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Population health</span>
+                  <span class="pill">CoCM</span>
+                  <span class="pill">Medicaid</span>
+                  <span class="pill">Predictive analytics</span>
+                </div>
+              </summary>
+              <div class="company-body">
+                <div class="body-grid">
+                  <div class="mini">
+                    <h4>Core product</h4>
+                    <ul>
+                      <li>Virtual collaborative-care overlay for PCPs plus specialty programs for high-risk populations.</li>
+                      <li>Behavioral managers, psychiatric consultants, 24/7 support, and app-based engagement.</li>
+                      <li>Straddles primary-care integration and payer-facing population management.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Go-to-market</h4>
+                    <ul>
+                      <li>Health plans, health systems, hospitals, and PCP groups.</li>
+                      <li>Strong fit in Medicaid and complex social-risk populations.</li>
+                      <li>Uses ROI framing rather than pure access messaging.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Scale</h4>
+                    <ul>
+                      <li>Active in 23 states plus DC.</li>
+                      <li>Raised ~$31M.</li>
+                      <li>Large partnership with Community Health Systems brings BH support to hundreds of PCP sites.</li>
+                    </ul>
+                  </div>
+                  <div class="mini">
+                    <h4>Technology differentiators</h4>
+                    <ul>
+                      <li>Mindoula registry and M3 screening tools.</li>
+                      <li>Predictive analytics for risk stratification and targeted interventions.</li>
+                      <li>Interoperability via marketplaces like athenahealth improves deployment speed.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="company-card" data-segment="integration" data-keywords="brave health medicaid virtual behavioral health access medarrive psychiatry therapy">
+              <summary>
+                <div class="summary-top">
+                  <div>
+                    <h4 class="company-name">Brave Health</h4>
+                    <p class="company-tagline">Virtual-first behavioral provider built around Medicaid access, care management integration, and rapid engagement.</p>
+                  </div>
+                  <div class="caret" aria-hidden="true"></div>
+                </div>
+                <div class="tag-row">
+                  <span class="pill">Medicaid</span>
+                  <span class="pill">Access engine</span>
+                  <span class="pill">Therapy + psychiatry</span>
+                  <span class="pill">Care managementWe reached the maximum number of tokens allowed for this response
